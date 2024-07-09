@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Check List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007bff;
+            padding: 10px 4px;
+            border-bottom: 2px solid #0056b3;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            margin: 0 10px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar i {
+            margin-right: 5px;
+        }
+
+        .container {
+            padding: 100px 20px 20px 20px; 
+            text-align: center;
+        }
+
+        .container h1 {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container a.btn {
+            animation: fadeInUp 1.1s ease forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="nav-link" href="https://nidhinr1998.github.io/nidhinportfolio/#contact">
+        <i class="fas fa-user-circle"></i> HELP!
+    </a>
+    <a class="nav-link" href="/userDetails/home">
+        <i class="fas fa-home"></i> Home
+    </a>
+    <a class="nav-link" href="/todo/list-todos">
+        <i class="fas fa-tasks"></i> Your Check List
+    </a>
+    <a class="nav-link" href="/userDetails/logout">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</nav>
+
+<div class="container">
+    <h1>Welcome: <span th:text="${username}"></span></h1>
+    <hr>
+    <p>Your Check Lists Are: <a href="/todo/list-todos" class="btn">Manage List</a></p>
+</div>
+
+<!-- Include the footer content here -->
+<script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
+</body>
+</html>

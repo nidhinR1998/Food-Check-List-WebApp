@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Food Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007bff;
+            padding: 10px 4px;
+            border-bottom: 2px solid #0056b3;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar i {
+            margin-right: 5px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto 20px auto; /* Adjusted margin to account for fixed navbar */
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555555;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .text-warning {
+            color: #ff8800;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-toggler {
+                display: block;
+            }
+
+            .navbar-nav {
+                display: none;
+                flex-direction: column;
+            }
+
+            .navbar-toggler.active + .navbar-nav {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a class="nav-link" href="https://nidhinr1998.github.io/nidhinportfolio/#contact">
+        <i class="fas fa-user-circle"></i> HELP!
+    </a>
+    <a class="nav-link" href="/userDetails/home">
+        <i class="fas fa-home"></i> Home
+    </a>
+    <a class="nav-link" href="/todo/list-todos">
+        <i class="fas fa-tasks"></i> Your Check List
+    </a>
+    <a class="nav-link" href="/userDetails/logout">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+
+<div class="container">
+    <h1>Enter Food Details</h1>
+    <form th:action="@{/todo/add-todo}" th:object="${todo}" method="post">
+        <fieldset>
+            <label for="description">Food Item</label>
+            <input type="text" th:field="*{description}" id="description" />
+            <div th:if="${#fields.hasErrors('description')}" class="text-warning">
+                <p th:errors="*{description}"></p>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <label for="targetDate">Received Date</label>
+            <input type="text" th:field="*{targetDate}" id="targetDate" />
+            <div th:if="${#fields.hasErrors('targetDate')}" class="text-warning">
+                <p th:errors="*{targetDate}"></p>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <label for="time">Time</label>
+            <select th:field="*{time}" id="time">
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="night">Night</option>
+            </select>
+            <div th:if="${#fields.hasErrors('time')}" class="text-warning">
+                <p th:errors="*{time}"></p>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <label for="done">Received</label>
+            <select th:field="*{received}" id="received">
+                <option value="true">true</option>
+                <option value="false">false</option>
+            </select>
+            <div th:if="${#fields.hasErrors('received')}" class="text-warning">
+                <p th:errors="*{received}"></p>
+            </div>
+        </fieldset>
+
+        <input type="hidden" th:field="*{id}" />
+        <input type="submit" class="btn" value="Submit" />
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var targetDate = new Pikaday({
+            field: document.getElementById('targetDate'),
+            format: 'YYYY-MM-DD',
+            toString(date, format) {
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`;
+            },
+            parse(dateString, format) {
+                const parts = dateString.split('-');
+                const day = parseInt(parts[2], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const year = parseInt(parts[0], 10);
+                return new Date(year, month, day);
+            },
+            setDefaultDate: true,
+            defaultDate: new Date()
+        });
+    });
+</script>
+</body>
+</html>
