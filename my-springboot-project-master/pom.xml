@@ -16,7 +16,7 @@
     <name>CheckListApplication</name>
     <description>A Spring Boot Application for taking count for the daily food received.</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <!-- Your dependencies remain unchanged -->
