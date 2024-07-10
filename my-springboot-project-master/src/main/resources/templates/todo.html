@@ -171,8 +171,8 @@
         <fieldset>
             <label for="done">Received</label>
             <select th:field="*{received}" id="received">
-                <option value="true">true</option>
-                <option value="false">false</option>
+                <option value="true">Received</option>
+                <option value="false">Not Received</option>
             </select>
             <div th:if="${#fields.hasErrors('received')}" class="text-warning">
                 <p th:errors="*{received}"></p>
