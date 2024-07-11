@@ -37,45 +37,27 @@ import jakarta.validation.Valid;
 @SessionAttributes("username")
 public class TodoControllerJpa {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
-	/* private TodoService todoService; */
-
 	private TodoRepository todoRepository;
 	private TodoService todoService;
-
 	public TodoControllerJpa(TodoService todoService, TodoRepository todoRepository) {
 		super();
 		this.todoService = todoService;
 		this.todoRepository = todoRepository;
 	}
 
-	/*
-	 * @RequestMapping(value="/list-todos", method = RequestMethod.GET) private
-	 * String listAllTodos(ModelMap model) { String username =
-	 * getLoggedInUsername(model); logger.debug("UserName:",username); List<Todo>
-	 * todo = todoRepository.findByUsername(username); int totalAmount =
-	 * todo.stream().mapToInt(Todo::getAmount).sum();
-	 * logger.debug("List All Todo Hit"); model.addAttribute("todos", todo);
-	 * model.addAttribute("totalAmount", totalAmount); return "listTodos"; }
-	 */
-
 	@RequestMapping(value = "/list-todos", method = RequestMethod.GET)
 	private String listAllTodos(ModelMap model, Principal principal) {
-		String username = principal.getName(); // Directly retrieve username from Principal
+		String username = principal.getName();
 		logger.debug("Username: {}", username);
-
 		List<Todo> todos = todoRepository.findByUsername(username);
-	//	logger.debug("todos: {}", todos);
 		int totalAmount = todos.stream().mapToInt(Todo::getAmount).sum();
-
 		model.addAttribute("todos", todos);
 		model.addAttribute("totalAmount", totalAmount);
 		model.addAttribute("username", username); // Add username explicitly to the model
-
 		logger.debug("List All Todos Hit");
 		return "listTodos";
 	}
-
+	
 	@RequestMapping(value = "/add-todo", method = RequestMethod.GET)
 	private String showNewTodoPage(ModelMap model, Principal principal) {
 		String username = getLoggedInUsername(model);
@@ -93,11 +75,7 @@ public class TodoControllerJpa {
 		}
 		String username = getLoggedInUsername(model);
 		todo.setUsername(username);
-		todoRepository.save(todo);
-		/*
-		 * todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(),
-		 * todo.isDone());
-		 */
+		todoRepository.save(todo);		
 		logger.debug("Add New Todo Hit");
 		return "redirect:list-todos";
 	}
@@ -126,8 +104,7 @@ public class TodoControllerJpa {
 		}
 		String username = getLoggedInUsername(model);
 		todo.setUsername(username);
-		todoRepository.save(todo);
-		/* todoService.updateTodo(todo); */
+		todoRepository.save(todo);		
 		logger.debug("Update Todo Hit");
 		return "redirect:list-todos";
 	}
@@ -136,18 +113,15 @@ public class TodoControllerJpa {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return authentication.getName();
 	}
-
 	
 	@RequestMapping(value = "/filter-todos", method = RequestMethod.POST)
 	@ResponseBody
 	public TodoFilterRes filterTodos(@RequestBody TodoFilterReq req) {
         TodoFilterRes todoFilter = todoService.getfilterTodos(req);
-
         // Calculate total amount
         int totalAmount = todoService.calculateTotalAmount(todoFilter.getTodos());
         todoFilter.setTotalAmount(totalAmount);
         logger.debug("Total Amount: {}",totalAmount);
-
         return todoFilter;
     }
 
