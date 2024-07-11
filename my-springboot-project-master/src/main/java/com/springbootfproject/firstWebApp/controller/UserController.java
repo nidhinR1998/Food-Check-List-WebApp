@@ -47,7 +47,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/home", method = RequestMethod.GET)
-	public String home(Model model, Principal principal) {
+	public String home(Model model, Principal principal) {		
 	    model.addAttribute("username", getLoggedinUsername());
 	    return "home";
 	}
@@ -55,12 +55,14 @@ public class UserController {
 	private String getLoggedinUsername() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String username = authentication.getName();
+	    logger.debug("HomePage Hit by User: {}",username);
 	    String fullname = service.getFullName(username);
 	    return username;
 	}
 
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(Model model, UserDto userDto) {
+		logger.debug("LoginPage Hit by User: {}",userDto.getFullname());
 		model.addAttribute("user", userDto);
 		return "login";
 	}
@@ -73,11 +75,9 @@ public class UserController {
         }
         return "redirect:/login?logout";
     }
-	
-	
-	@GetMapping("/register")
-	public String register(Model model, UserDto userDto) {
 		
+	@GetMapping("/register")
+	public String register(Model model, UserDto userDto) {		
 		model.addAttribute("user", userDto);
 		return "register";
 	}
@@ -87,11 +87,9 @@ public class UserController {
 		User user = userService.findByUsername(userDto.getUsername());
 		if (user != null) {
 			model.addAttribute("userexist", user);
-			return "register";
-			
+			return "register";			
 		}
 		userService.save(userDto);
 		return "redirect:/register?success";
 	}
-
 }

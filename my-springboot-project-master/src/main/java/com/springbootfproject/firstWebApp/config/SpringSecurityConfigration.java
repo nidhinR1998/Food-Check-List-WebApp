@@ -23,12 +23,10 @@ public class SpringSecurityConfigration {
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-	
+	}	
 	@SuppressWarnings("removal")
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
-		
+	public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {		
 		http.csrf().disable().authorizeHttpRequests()
 		.requestMatchers("/userDetails/register").permitAll()
 		.requestMatchers("/todo/list-todos").permitAll()
@@ -46,15 +44,11 @@ public class SpringSecurityConfigration {
 		.invalidateHttpSession(true)
 	     .clearAuthentication(true)
 	     .logoutRequestMatcher(new AntPathRequestMatcher("/userDetails/logout"))
-	     .logoutSuccessUrl("/userDetails/login?logout").permitAll();
-		
-		return http.build();
-		
-}
-	
+	     .logoutSuccessUrl("/userDetails/login?logout").permitAll();		
+		return http.build();		
+}	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(customUserDetailsServices).passwordEncoder(passwordEncoder());
 	}
-
 }
