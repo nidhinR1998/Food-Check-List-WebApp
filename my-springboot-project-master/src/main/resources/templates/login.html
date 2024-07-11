@@ -4,111 +4,181 @@
 <meta charset="ISO-8859-1">
 <title>Login</title>
 <style>
-.container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-}
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-.form-container {
-	background-color: #fff;
-	padding: 30px;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	margin: 10px;
-	width: 400px; /* Adjust the width as per your preference */
-}
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-h2 {
-	text-align: center;
-	color: #5e057e;
-	font-weight: bold;
-	margin-bottom: 20px;
-}
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
 
-.form-group {
-	margin-bottom: 20px;
-}
+    .form-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        width: 400px;
+        animation: fadeIn 1.5s ease-in-out;
+        text-align: center; /* Center align the content */
+    }
 
-label {
-	display: block;
-	margin-bottom: 5px;
-	color: #5e057e;
-	font-weight: bold;
-}
+    h2 {
+        text-align: center;
+        color: #5e057e;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
 
-input[type="text"], input[type="text"], input[type="password"] {
-	width: 100%;
-	padding: 10px;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	font-weight: bold;
-}
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center; /* Align items vertically */
+        justify-content: center; /* Center items horizontally */
+    }
 
-button[type="submit"] {
-	background-color: #5e057e;
-	color: #fff;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 3px;
-	cursor: pointer;
-	width: 100%;
-	font-weight: bold;
-}
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #5e057e;
+        font-weight: bold;
+        width: 100px; /* Adjusted width for labels */
+        text-align: right; /* Right-align labels */
+        padding-right: 10px; /* Add padding for space */
+    }
 
-button[type="submit"]:hover {
-	background-color: #c299d0;
-}
+    input[type="text"], input[type="password"] {
+        flex: 1; /* Take up remaining space */
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-weight: bold;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        width: 100%; /* Ensure input takes full width */
+    }
 
-.error-message, .logout-message {
-	background-color: #5e057e;
-	color: #fff;
-	padding: 10px;
-	border-radius: 3px;
-	text-align: center;
-}
+    input[type="text"]:focus, input[type="password"]:focus {
+        border-color: #5e057e;
+        box-shadow: 0 0 8px rgba(94, 5, 126, 0.2);
+        outline: none;
+    }
+
+    button[type="submit"], .signup-button {
+        background-color: #5e057e;
+        color: #fff;
+        padding: 12px 20px; /* Adjusted padding to make the button larger */
+        border: none;
+        border-radius: 20px; /* Applied border-radius for curved corners */
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px; /* Increased font size for larger button */
+        transition: background-color 0.3s ease;
+        margin-top: 10px; /* Added margin to separate buttons */
+        animation: slideIn 1s ease-in-out; /* Animation for both buttons */
+    }
+
+    button[type="submit"]:hover, .signup-button:hover {
+        background-color: #c299d0;
+    }
+
+    .error-message, .logout-message {
+        background-color: #5e057e;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .signup-text {
+        color: #5e057e;
+        font-weight: bold;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center; /* Center align the text */
+        align-items: center; /* Center align the text */
+    }
+
+    a {
+        color: #5e057e;
+        font-weight: bold;
+        transition: color 0.3s ease;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #c299d0;
+    }
 </style>
 </head>
 <body>
 
-	<div class="container">
-		<div class="form-container">
+    <div class="container">
+        <div class="form-container">
 
+            <div th:if="${param.error}">
+                <div class="error-message">
+                    <p>Invalid Username or password</p>
+                </div>
+            </div>
 
-			<div th:if="${param.error}">
-				<div class="error-message">
-					<p>Invalid Username or password</p>
-				</div>
-			</div>
+            <div th:if="${param.logout}">
+                <div class="logout-message">
+                    <p>Logout Successful!</p>
+                </div>
+            </div>
 
+            <h2>Login</h2>
+            <form method="post" role="form" th:action="@{/userDetails/login}" th:object="${user}">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input th:field="*{username}" type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input th:field="*{password}" type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <div class="signup-text"><a class="signup-button" th:href="@{/userDetails/register}">SignUp</a></div>
+        </div>
 
-
-			<div th:if="${param.logout}">
-				<div class="logout-message">
-					<p>Logout Successful!</p>
-				</div>
-			</div>
-
-			<h2>Login</h2>
-			<form method="post" role="form" th:action="@{/userDetails/login}"
-				th:object="${user}">
-
-				<div class="form-group">
-					<label for="username">Username</label> <input
-						th:field="*{username}" type="text" id="username" name="username"
-						placeholder="Enter your username" required>
-				</div>
-				<div class="form-group">
-					<label for="password">Password</label> <input
-						th:field="*{password}" type="password" id="password"
-						name="password" placeholder="Enter your password" required>
-				</div>
-				<button type="submit">Login</button>
-			</form>
-			<span> Register here: <a th:href="@{/userDetails/register}">Register</a></span>
-		</div>
-	</div>
+    </div>
 
 </body>
 </html>
