@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springbootfproject.firstWebApp.dto.UserDto;
 import com.springbootfproject.firstWebApp.service.TodoService;
@@ -83,13 +84,23 @@ public class UserController {
 	}
 	
 	@PostMapping("/register")
-	public String registerSave(@ModelAttribute("user") UserDto userDto, Model model) {
-		User user = userService.findByUsername(userDto.getUsername());
-		if (user != null) {
-			model.addAttribute("userexist", user);
-			return "register";			
-		}
-		userService.save(userDto);
-		return "redirect:/register?success";
+	public String registerSave(@ModelAttribute("user") UserDto userDto, Model model, RedirectAttributes redirectAttributes) {
+	    User user = userService.findByUsername(userDto.getUsername());
+	    if (user != null) {
+	        model.addAttribute("userexist", true);
+	        return "register";
+	    }
+	    userService.save(userDto);
+	    redirectAttributes.addAttribute("success", true);
+	    return "redirect:/register";
 	}
+	
+	@RequestMapping(value="/forgotPassword", method = RequestMethod.GET)
+	public String forgotPassword(Model model, UserDto userDto) {
+		logger.debug("ForgotPassword Hit");
+		//model.addAttribute("user", userDto);
+		return "forgotPassword";
+	}
+
+
 }
