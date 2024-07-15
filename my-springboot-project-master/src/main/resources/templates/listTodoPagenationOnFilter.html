@@ -5,79 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Check List</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
             font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
-            margin-top: 100px; /* Adjust for fixed navbar */
-            overflow-y: auto; /* Enable vertical scrolling */
-            max-height: calc(100vh - 160px); /* Adjust for navbar and margins */
+            padding-top: 80px; /* Adjusted for fixed navbar */
         }
 
         .navbar {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             background-color: #007bff;
-            padding: 10px 4px;
             border-bottom: 2px solid #0056b3;
             position: fixed;
             top: 0;
-            left: 0;
-            right: 0;
+            width: 100%;
             z-index: 1000;
         }
 
         .navbar a {
             color: #fff;
+            font-size: 1rem;
             text-decoration: none;
             margin: 0 10px;
-            font-size: 1rem;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
         }
 
         .navbar i {
             margin-right: 5px;
         }
 
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            width: 90%;
+        }
+
         h1 {
-            font-weight: bold;
             color: #333;
+            font-size: 2rem;
+            font-weight: bold;
             margin-bottom: 20px;
-            margin-top: 0; /* Adjusted for fixed navbar */
+            margin-top: 0;
         }
 
         table {
-            width: 100%;
             border-collapse: collapse;
+            margin: auto;
             margin-bottom: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
+            width: 100%;
         }
 
         th, td {
+            border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
         }
@@ -93,13 +76,13 @@
         }
 
         .btn {
-            padding: 8px 16px;
             border: none;
             border-radius: 5px;
-            font-size: 0.9rem;
             cursor: pointer;
             display: inline-block;
+            font-size: 0.9rem;
             margin: 5px;
+            padding: 8px 16px;
         }
 
         .btn-success {
@@ -120,19 +103,37 @@
             background-color: #e0a800;
         }
 
-        .btn i {
-            margin-right: 5px;
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
         }
 
-        .table-light {
-            text-align: center;
+        .pagination-button {
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 0 5px;
+            padding: 8px 12px;
+        }
+
+        .pagination-button:hover {
+            background-color: #0056b3;
+        }
+
+        .pagination-button.active {
+            background-color: #0056b3;
         }
 
         .filters {
+            align-items: center;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 20px;
         }
 
@@ -146,53 +147,26 @@
         }
 
         .filter-select {
-            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 0.9rem;
+            padding: 8px;
             width: 100%;
             max-width: 200px;
         }
 
         .btn-apply {
-            padding: 8px 16px;
+            background-color: #007bff;
             border: none;
             border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            background-color: #007bff;
             color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 8px 16px;
         }
 
         .btn-apply:hover {
             background-color: #0056b3;
-        }
-
-        .pagination {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .pagination-button {
-            padding: 8px 12px;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            background-color: #fff;
-            color: #007bff;
-            margin: 0 5px;
-        }
-
-        .pagination-button.active {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .pagination-button:hover {
-            background-color: #f0f0f0;
         }
 
         @media (max-width: 600px) {
@@ -200,11 +174,11 @@
                 width: 95%;
             }
 
-            table, th, td {
+            .navbar a {
                 font-size: 0.9rem;
             }
 
-            .navbar a {
+            table, th, td {
                 font-size: 0.9rem;
             }
 

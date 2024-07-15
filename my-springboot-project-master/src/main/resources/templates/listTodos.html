@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Check List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
             font-family: 'Arial', sans-serif;
         }
 
@@ -22,38 +17,22 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
             margin-top: 100px; /* Adjust for fixed navbar */
             overflow-y: auto; /* Enable vertical scrolling */
             max-height: calc(100vh - 160px); /* Adjust for navbar and margins */
         }
 
         .navbar {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             background-color: #007bff;
-            padding: 10px 4px;
+            padding: 10px 0;
             border-bottom: 2px solid #0056b3;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
         }
 
         .navbar a {
             color: #fff;
             text-decoration: none;
-            margin: 0 10px;
+            margin: 0 15px;
             font-size: 1rem;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
         }
 
         .navbar i {
@@ -63,8 +42,8 @@
         h1 {
             font-weight: bold;
             color: #333;
+            margin-top: 0;
             margin-bottom: 20px;
-            margin-top: 0; /* Adjusted for fixed navbar */
         }
 
         table {
@@ -98,7 +77,6 @@
             border-radius: 5px;
             font-size: 0.9rem;
             cursor: pointer;
-            display: inline-block;
             margin: 5px;
         }
 
@@ -118,54 +96,6 @@
 
         .btn-warning:hover {
             background-color: #e0a800;
-        }
-
-        .btn i {
-            margin-right: 5px;
-        }
-
-        .table-light {
-            text-align: center;
-        }
-
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .filter-item {
-            margin-bottom: 10px;
-        }
-
-        .filter-label {
-            font-weight: bold;
-            margin-right: 5px;
-        }
-
-        .filter-select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            width: 100%;
-            max-width: 200px;
-        }
-
-        .btn-apply {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .btn-apply:hover {
-            background-color: #0056b3;
         }
 
         .pagination {
@@ -195,9 +125,13 @@
             background-color: #f0f0f0;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
-                width: 95%;
+                padding: 10px;
+            }
+
+            .btn {
+                font-size: 0.8rem;
             }
 
             table, th, td {
@@ -206,14 +140,6 @@
 
             .navbar a {
                 font-size: 0.9rem;
-            }
-
-            .filters {
-                flex-direction: column;
-            }
-
-            .filter-item {
-                width: 100%;
             }
         }
     </style>
@@ -238,48 +164,56 @@
 <div class="container">
     <h1>Your Check Lists Are:</h1>
 
-    <div class="filters">
-        <div class="filter-item">
-            <span class="filter-label">Filter by Time:</span>
-            <select id="filter-time" class="filter-select">
-                <option value="">All</option>
-                <option value="morning">Morning</option>
-                <option value="afternoon">Afternoon</option>
-                <option value="night">Night</option>
-            </select>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="filter-time">Filter by Time:</label>
+                <select id="filter-time" class="form-control">
+                    <option value="">All</option>
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="night">Night</option>
+                </select>
+            </div>
         </div>
-        <div class="filter-item">
-            <span class="filter-label">Filter by Received:</span>
-            <select id="filter-received" class="filter-select">
-                <option value="">All</option>
-                <option value="true">Received</option>
-                <option value="false">Not Received</option>
-            </select>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="filter-received">Filter by Received:</label>
+                <select id="filter-received" class="form-control">
+                    <option value="">All</option>
+                    <option value="true">Received</option>
+                    <option value="false">Not Received</option>
+                </select>
+            </div>
         </div>
-        <div class="filter-item">
-            <span class="filter-label">Filter by Month:</span>
-            <select id="filter-month" class="filter-select">
-                <option value="">All</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="filter-month">Filter by Month:</label>
+                <select id="filter-month" class="form-control">
+                    <option value="">All</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
         </div>
-        <button id="btn-apply" class="btn btn-apply"><i class="fas fa-filter"></i> Apply Filter</button>
-        <button id="btn-remove-filter" class="btn btn-apply"><i class="fas fa-filter"></i> Remove Filter</button>
+        <div class="col-md-3">
+            <button id="btn-apply" class="btn btn-primary btn-block mt-4"><i class="fas fa-filter"></i> Apply Filter</button>
+            <button id="btn-remove-filter" class="btn btn-secondary btn-block mt-2"><i class="fas fa-filter"></i> Remove Filter</button>
+        </div>
     </div>
 
-    <table id="todos-table">
-        <thead class="table-light">
+    <table id="todos-table" class="table table-bordered">
+        <thead class="thead-light">
             <tr>
                 <th>Serial Number</th>
                 <th>Food Item</th>
@@ -300,8 +234,8 @@
                 <td th:text="${todo.time}"></td>
                 <td th:text="${todo.received}"></td>
                 <td th:text="${todo.amount}"></td>
-                <td><a th:href="@{/todo/delete-todo(id=${todo.id})}" class="btn btn-warning btn-delete"><i class="fas fa-trash-alt"></i> Delete</a></td>
-                <td><a th:href="@{/todo/update-todo(id=${todo.id})}" class="btn btn-success btn-update"><i class="fas fa-edit"></i> Update</a></td>
+                <td><a th:href="@{/todo/delete-todo(id=${todo.id})}" class="btn btn-warning"><i class="fas fa-trash-alt"></i> Delete</a></td>
+                <td><a th:href="@{/todo/update-todo(id=${todo.id})}" class="btn btn-success"><i class="fas fa-edit"></i> Update</a></td>
             </tr>
         </tbody>
         <tfoot>
@@ -324,6 +258,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script th:inline="javascript">
     $(document).ready(function() {
         const todosPerPage = 5;
@@ -342,8 +277,8 @@
                     '<td>' + todo.time + '</td>' +
                     '<td>' + todo.received + '</td>' +
                     '<td>' + todo.amount + '</td>' +
-                    '<td><a href="/todo/delete-todo?id=' + todo.id + '" class="btn btn-warning btn-delete"><i class="fas fa-trash-alt"></i> Delete</a></td>' +
-                    '<td><a href="/todo/update-todo?id=' + todo.id + '" class="btn btn-success btn-update"><i class="fas fa-edit"></i> Update</a></td>' +
+                    '<td><a href="/todo/delete-todo?id=' + todo.id + '" class="btn btn-warning"><i class="fas fa-trash-alt"></i> Delete</a></td>' +
+                    '<td><a href="/todo/update-todo?id=' + todo.id + '" class="btn btn-success"><i class="fas fa-edit"></i> Update</a></td>' +
                     '</tr>';
                 $('#todos-body').append(row);
                 totalAmount += todo.amount;
@@ -429,7 +364,7 @@
             currentPage = 1;
             paginateTodos();
             
-            // Reload the page
+         // Reload the page
             window.location.reload();
         });
 

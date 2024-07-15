@@ -29,6 +29,7 @@ public class SpringSecurityConfigration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {		
 		http.csrf().disable().authorizeHttpRequests()
 		.requestMatchers("/userDetails/register").permitAll()
+		.requestMatchers("/userDetails/forgotPassword").permitAll()
 		.requestMatchers("/todo/list-todos").permitAll()
 		.requestMatchers("/todo/add-todo").permitAll()
 		.requestMatchers("/todo/delete-todo").permitAll()
