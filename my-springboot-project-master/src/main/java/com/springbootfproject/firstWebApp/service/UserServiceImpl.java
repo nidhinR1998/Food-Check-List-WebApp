@@ -74,7 +74,6 @@ public class UserServiceImpl implements UserService {
 	        String resetToken = UUID.randomUUID().toString();
 	        user.setResetToken(resetToken);
 	        userRepository.save(user);
-
 	        String resetUrl = baseUrl + resetPasswordPath + "?token=" + resetToken;
 	        SimpleMailMessage message = new SimpleMailMessage();
 	        if (isEmailValid(user.getEmail())) {
@@ -123,7 +122,7 @@ public class UserServiceImpl implements UserService {
 	    User user = userRepository.findByResetToken(token);
 	    if (user != null) {
 	        user.setPassword(passwordEncoder.encode(newPassword));
-	        user.setResetToken(null); // Clear the reset token after successful password reset
+	        user.setResetToken(null); 
 	        userRepository.save(user);
 	        logger.debug("Password updated and reset token cleared for user: {}", user.getUsername());
 	    } else {
