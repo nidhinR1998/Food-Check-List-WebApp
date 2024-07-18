@@ -9,5 +9,6 @@ import com.springbootfproject.firstWebApp.todomodel.User;
 public interface UserRepository extends JpaRepository<User, Long>{
 	
 	User findByUsername (String username);
+	User findByResetToken(String resetToken);
 
 }
