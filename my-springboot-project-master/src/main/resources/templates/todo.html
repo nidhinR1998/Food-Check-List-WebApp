@@ -157,7 +157,7 @@
     <form th:action="@{/todo/add-todo}" th:object="${todo}" method="post">
         <fieldset>
             <label for="description">Food Item</label>
-            <input type="text" th:field="*{description}" id="description" />
+            <input type="text" th:field="*{description}" id="description" required/>
             <div th:if="${#fields.hasErrors('description')}" class="text-warning">
                 <p th:errors="*{description}"></p>
             </div>
@@ -165,7 +165,7 @@
 
         <fieldset>
             <label for="targetDate">Received Date</label>
-            <input type="text" th:field="*{targetDate}" id="targetDate" />
+            <input type="text" th:field="*{targetDate}" id="targetDate" required/>
             <div th:if="${#fields.hasErrors('targetDate')}" class="text-warning">
                 <p th:errors="*{targetDate}"></p>
             </div>
@@ -173,7 +173,7 @@
 
         <fieldset>
             <label for="time">Time</label>
-            <select th:field="*{time}" id="time">
+            <select th:field="*{time}" id="time" required>            
                 <option value="morning">Morning</option>
                 <option value="afternoon">Afternoon</option>
                 <option value="night">Night</option>
@@ -185,7 +185,7 @@
 
         <fieldset>
             <label for="done">Received</label>
-            <select th:field="*{received}" id="received">
+            <select th:field="*{received}" id="received" required>
                 <option value="true">Received</option>
                 <option value="false">Not Received</option>
             </select>

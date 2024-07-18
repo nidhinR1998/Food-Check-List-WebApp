@@ -53,8 +53,9 @@ public class UserController {
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Model model, Principal principal) {
 		String username = getLoggedinUsername();
-		logger.debug("HomePage Hit by User: {}", username);
-		model.addAttribute("username", username);
+		User user = userService.findByUsername(username);
+		logger.debug("HomePage Hit by User: {}", user.getFullname());
+		model.addAttribute("username", user.getFullname());
 		return "home";
 	}
 
