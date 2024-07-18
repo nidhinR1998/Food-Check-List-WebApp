@@ -16,40 +16,52 @@ import com.springbootfproject.firstWebApp.service.CustomUserDetailsServices;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfigration {
-	
-	@Autowired
-	CustomUserDetailsServices customUserDetailsServices;
-	
-	@Bean
-	public static PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}	
-	@SuppressWarnings("removal")
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {		
-		http.csrf().disable().authorizeHttpRequests()
-		.requestMatchers("/userDetails/register").permitAll()
-		.requestMatchers("/userDetails/forgotPassword").permitAll()
-		.requestMatchers("/todo/list-todos").permitAll()
-		.requestMatchers("/todo/add-todo").permitAll()
-		.requestMatchers("/todo/delete-todo").permitAll()
-		.requestMatchers("/todo/update-todo").permitAll()
-		.requestMatchers("/todo/filter-todos").permitAll()
-		.requestMatchers("/userDetails/home").permitAll().and()
-		.formLogin()
-		.loginPage("/userDetails/login")
-		.loginProcessingUrl("/userDetails/login")
-		.defaultSuccessUrl("/userDetails/home", true).permitAll()
-		.and()
-		.logout()
-		.invalidateHttpSession(true)
-	     .clearAuthentication(true)
-	     .logoutRequestMatcher(new AntPathRequestMatcher("/userDetails/logout"))
-	     .logoutSuccessUrl("/userDetails/login?logout").permitAll();		
-		return http.build();		
-}	
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(customUserDetailsServices).passwordEncoder(passwordEncoder());
-	}
+
+    @Autowired
+    CustomUserDetailsServices customUserDetailsServices;
+
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @SuppressWarnings("removal")
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests()
+            .requestMatchers("/userDetails/register").permitAll()
+            .requestMatchers("/userDetails/forgotPassword").permitAll()
+            .requestMatchers("/userDetails/forgotPassword2").permitAll()
+            .requestMatchers("/userDetails/forgotPasswordVerify").permitAll()
+            .requestMatchers("/userDetails/resetPassword").permitAll()
+            .requestMatchers("/userDetails/resetPassword?token={token}").permitAll()
+            .requestMatchers("/userDetails/resetPassword2").permitAll()
+            .requestMatchers("/userDetails/resetPassword2?token={token}").permitAll()
+            .requestMatchers("/todo/list-todos").permitAll()
+            .requestMatchers("/todo/add-todo").permitAll()
+            .requestMatchers("/todo/delete-todo").permitAll()
+            .requestMatchers("/todo/update-todo").permitAll()
+            .requestMatchers("/todo/filter-todos").permitAll()
+            .requestMatchers("/userDetails/home").permitAll()
+            .and()
+            .formLogin()
+            .loginPage("/userDetails/login")
+            .loginProcessingUrl("/userDetails/login")
+            .defaultSuccessUrl("/userDetails/home", true)
+            .permitAll()
+            .and()
+            .logout()
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutRequestMatcher(new AntPathRequestMatcher("/userDetails/logout"))
+            .logoutSuccessUrl("/userDetails/login?logout")
+            .permitAll();
+        return http.build();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailsServices).passwordEncoder(passwordEncoder());
+    }
 }
