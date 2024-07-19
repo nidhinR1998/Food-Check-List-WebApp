@@ -67,26 +67,26 @@ public class UserServiceImpl implements UserService {
 				userDto.getFullname(), userDto.getEmail(), userDto.getSecurityQuestion(), userDto.getSecurityAnswer(),
 				userDto.getResetToken());
 		// Otp validation
-		int otp =  (int) (Math.random() * 9000) + 1000;
-		logger.debug("The OTP: {}", otp);
-		SimpleMailMessage message = new SimpleMailMessage();
-		if (isEmailValid(user.getEmail())) {
-			message.setTo(user.getEmail());
-		} else {
-			logger.error("Invalid email address: " + user.getEmail());
+		// int otp =  (int) (Math.random() * 9000) + 1000;
+		// logger.debug("The OTP: {}", otp);
+		// SimpleMailMessage message = new SimpleMailMessage();
+		// if (isEmailValid(user.getEmail())) {
+		// 	message.setTo(user.getEmail());
+		// } else {
+		// 	logger.error("Invalid email address: " + user.getEmail());
 			
-		}
-		message.setSubject("OTP VALIDATION");
-		message.setText("Hello \n\n" + "Your Login OTP :" + otp + ".Please Verify. \n\n" + "Regards \n" + "Your Food Check List Team");
-		try {
-			mailSender.send(message);
-			logger.debug("OTP is generated and email sent to user: {}", userDto.getUsername());	
+		// }
+		// message.setSubject("OTP VALIDATION");
+		// message.setText("Hello \n\n" + "Your Login OTP :" + otp + ".Please Verify. \n\n" + "Regards \n" + "Your Food Check List Team");
+		// try {
+		// 	mailSender.send(message);
+		// 	logger.debug("OTP is generated and email sent to user: {}", userDto.getUsername());	
 			
-		} catch (MailAuthenticationException ex) {
-			logger.error("Mail authentication failed", ex);
-		} catch (MailException ex) {
-			logger.error("Failed to send email", ex);
-		}
+		// } catch (MailAuthenticationException ex) {
+		// 	logger.error("Mail authentication failed", ex);
+		// } catch (MailException ex) {
+		// 	logger.error("Failed to send email", ex);
+		// }
 
 		return userRepository.save(user);
 	}
