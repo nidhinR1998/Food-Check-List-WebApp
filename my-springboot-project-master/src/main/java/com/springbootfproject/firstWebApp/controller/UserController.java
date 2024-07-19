@@ -35,12 +35,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/userDetails")
 @SessionAttributes("username")
 public class UserController {
-	@Autowired
-	private JavaMailSender mailSender;
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private UserDetailsService userDetailsService;
 	@Autowired
 	private TodoService service;
 
