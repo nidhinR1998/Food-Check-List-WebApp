@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 	public User save2(UserDto userDto) {
 		logger.debug("Saving user: {}", userDto.getUsername());
 		User user = new User(userDto.getUsername(), passwordEncoder.encode(userDto.getPassword()),
-				userDto.getFullname(), userDto.getEmail(), userDto.getSecurityQuestion(), userDto.getSecurityAnswer(),
+				userDto.getFullname(),userDto.getPhoneNumber(), userDto.getEmail(), userDto.getSecurityQuestion(), userDto.getSecurityAnswer(),
 				userDto.getResetToken());
 		return userRepository.save(user);
 	}
@@ -64,8 +64,9 @@ public class UserServiceImpl implements UserService {
 	public User save(UserDto userDto) {
 		logger.debug("Saving user: {}", userDto.getUsername());
 		User user = new User(userDto.getUsername(), passwordEncoder.encode(userDto.getPassword()),
-				userDto.getFullname(), userDto.getEmail(), userDto.getSecurityQuestion(), userDto.getSecurityAnswer(),
+				userDto.getFullname(),userDto.getPhoneNumber(), userDto.getEmail(), userDto.getSecurityQuestion(), userDto.getSecurityAnswer(),
 				userDto.getResetToken());
+		
 		// Otp validation
 		int otp =  (int) (Math.random() * 9000) + 1000;
 		logger.debug("The OTP: {}", otp);

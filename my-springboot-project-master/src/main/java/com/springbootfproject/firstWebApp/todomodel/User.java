@@ -17,6 +17,7 @@ public class User {
     private String username;
     private String password;
     private String fullname;
+    private String phoneNumber;
     private String email;
     private String securityQuestion; 
     private String securityAnswer; 
@@ -25,10 +26,11 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String fullname,String email, String securityQuestion, String securityAnswer, String resetToken) {
+    public User(String username, String password, String fullname,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
@@ -99,5 +101,14 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
     
 }

@@ -5,6 +5,7 @@ public class UserDto {
     private String username;
     private String password;
     private String email;
+    private String phoneNumber;
     private String securityQuestion;
     private String securityAnswer;
     private String resetToken;// Add this field with getter and setter
@@ -13,10 +14,11 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String fullname, String username, String password,String email, String securityQuestion, String securityAnswer, String resetToken) {
+    public UserDto(String fullname, String username, String password,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken) {
         this.fullname = fullname;
         this.username = username;
         this.password = password;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
@@ -78,6 +80,14 @@ public class UserDto {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
     
