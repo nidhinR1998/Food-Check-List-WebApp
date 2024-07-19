@@ -20,9 +20,9 @@ public class ScheduledTaskService {
     @Autowired
     private UserRepository userRepository;
      
-//   @Scheduled(cron = "0 */2 * * * ?") // This runs every 2 minutes
+  @Scheduled(cron = "0 */2 * * * ?") // This runs every 2 minutes
 
-   @Scheduled(cron = "0 0 21 * * ?") // Runs every day at 9 PM
+//   @Scheduled(cron = "0 0 21 * * ?") // Runs every day at 9 PM
    public void sendDailyFoodUpdateReminder() {
 	    List<User> users = userRepository.findAll(); 
 	    String appLink = baseUrl;
