@@ -10,83 +10,64 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    
-    private String username;
-    private String password;
-    private String fullname;
-    private String phoneNumber;
-    private String email;
-    private String securityQuestion; 
-    private String securityAnswer; 
-    private String resetToken;
-    private int otpCode;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    public User() {
-    }
+	private String username;
+	private String password;
+	private String fullname;
+	private String phoneNumber;
+	private String email;
+	private String resetToken;
+	private int otpCode;
 
-    public User(String username, String password, String fullname,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken,int otpCode) {
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.securityQuestion = securityQuestion;
-        this.securityAnswer = securityAnswer;
-        this.resetToken = resetToken;
-        this.otpCode = otpCode;
-    }
+	public User() {
+	}
 
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
+	public User(String username, String password, String fullname, String phoneNumber, String email, String resetToken,
+			int otpCode) {
+		this.username = username;
+		this.password = password;
+		this.fullname = fullname;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.resetToken = resetToken;
+		this.otpCode = otpCode;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	// Getters and setters
+	public Long getId() {
+		return id;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getFullname() {
-        return fullname;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
+	public String getFullname() {
+		return fullname;
+	}
 
-    public String getSecurityQuestion() {
-        return securityQuestion;
-    }
-
-    public void setSecurityQuestion(String securityQuestion) {
-        this.securityQuestion = securityQuestion;
-    }
-
-    public String getSecurityAnswer() {
-        return securityAnswer;
-    }
-
-    public void setSecurityAnswer(String securityAnswer) {
-        this.securityAnswer = securityAnswer;
-    }
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
 
 	public String getResetToken() {
 		return resetToken;
@@ -119,6 +100,5 @@ public class User {
 	public void setOtpCode(int otpCode) {
 		this.otpCode = otpCode;
 	}
-	
-    
+
 }

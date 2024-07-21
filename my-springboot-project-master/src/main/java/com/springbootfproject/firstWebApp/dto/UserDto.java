@@ -6,8 +6,6 @@ public class UserDto {
     private String password;
     private String email;
     private String phoneNumber;
-    private String securityQuestion;
-    private String securityAnswer;
     private String resetToken;// Token for resetPassword
     private int otpCode;
 
@@ -15,14 +13,12 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String fullname, String username, String password,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken, int otpCode) {
+    public UserDto(String fullname, String username, String password,String phoneNumber,String email, String resetToken, int otpCode) {
         this.fullname = fullname;
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.securityQuestion = securityQuestion;
-        this.securityAnswer = securityAnswer;
         this.resetToken = resetToken;
         this.otpCode = otpCode;
     }
@@ -52,21 +48,6 @@ public class UserDto {
         this.password = password;
     }
 
-    public String getSecurityQuestion() {
-        return securityQuestion;
-    }
-
-    public void setSecurityQuestion(String securityQuestion) {
-        this.securityQuestion = securityQuestion;
-    }
-
-    public String getSecurityAnswer() {
-        return securityAnswer;
-    }
-
-    public void setSecurityAnswer(String securityAnswer) {
-        this.securityAnswer = securityAnswer;
-    }
 
 	public String getResetToken() {
 		return resetToken;
