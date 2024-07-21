@@ -8,13 +8,14 @@ public class UserDto {
     private String phoneNumber;
     private String securityQuestion;
     private String securityAnswer;
-    private String resetToken;// Add this field with getter and setter
+    private String resetToken;// Token for resetPassword
+    private int otpCode;
 
     // Constructors, getters, setters
     public UserDto() {
     }
 
-    public UserDto(String fullname, String username, String password,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken) {
+    public UserDto(String fullname, String username, String password,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken, int otpCode) {
         this.fullname = fullname;
         this.username = username;
         this.password = password;
@@ -23,6 +24,7 @@ public class UserDto {
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
         this.resetToken = resetToken;
+        this.otpCode = otpCode;
     }
 
     // Getters and setters
@@ -88,6 +90,14 @@ public class UserDto {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public int getOtpCode() {
+		return otpCode;
+	}
+
+	public void setOtpCode(int otpCode) {
+		this.otpCode = otpCode;
 	}
 	
     

@@ -9,11 +9,12 @@ public interface UserService {
 	User save2 (UserDto userDto);
 	User save (UserDto userDto);
 	User save(User user);
-	//boolean isValidSecurityQuestionAnswer(String question, String answer);
-	boolean isSecurityQuestionAnswerValid(String username,String securityAnswer, String securityQuestion);
+	void updateTokenByEmail(String email, String token);
+    void updateTokenByPhoneNumber(String phoneNumber, String token);
+	boolean getResetPasswordOTP(String username,String email);
 	boolean isResetTokenValid(String token);
-	void updatePassword(String token, String newPassword);
-	//void save(User user);
+	void updatePassword(String email,String newPassword);	
 	boolean isValidSecurityQuestionAnswer(String securityQuestion, String securityAnswer);
+	boolean verifyCode(String email, String code);
 
 }
