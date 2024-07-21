@@ -17,22 +17,26 @@ public class User {
     private String username;
     private String password;
     private String fullname;
+    private String phoneNumber;
     private String email;
     private String securityQuestion; 
     private String securityAnswer; 
     private String resetToken;
+    private int otpCode;
 
     public User() {
     }
 
-    public User(String username, String password, String fullname,String email, String securityQuestion, String securityAnswer, String resetToken) {
+    public User(String username, String password, String fullname,String phoneNumber,String email, String securityQuestion, String securityAnswer, String resetToken,int otpCode) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
         this.resetToken = resetToken;
+        this.otpCode = otpCode;
     }
 
     // Getters and setters
@@ -99,5 +103,22 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public int getOtpCode() {
+		return otpCode;
+	}
+
+	public void setOtpCode(int otpCode) {
+		this.otpCode = otpCode;
+	}
+	
     
 }

@@ -102,7 +102,7 @@ public class Todo {
         if (this.received) {
             switch (this.time.toLowerCase()) {
                 case "morning":
-                    this.amount = 45;
+                    this.amount = 40;
                     break;
                 case "afternoon":
                     this.amount = 50;

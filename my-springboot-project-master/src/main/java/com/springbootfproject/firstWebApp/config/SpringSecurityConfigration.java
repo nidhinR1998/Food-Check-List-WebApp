@@ -27,23 +27,18 @@ public class SpringSecurityConfigration {
 
     @SuppressWarnings("removal")
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeHttpRequests()
-            .requestMatchers("/userDetails/register").permitAll()
-            .requestMatchers("/userDetails/forgotPassword").permitAll()
-            .requestMatchers("/userDetails/forgotPassword2").permitAll()
-            .requestMatchers("/userDetails/forgotPasswordVerify").permitAll()
-            .requestMatchers("/userDetails/resetPassword").permitAll()
-            .requestMatchers("/userDetails/resetPassword?token={token}").permitAll()
-            .requestMatchers("/userDetails/resetPassword2").permitAll()
-            .requestMatchers("/userDetails/resetPassword2?token={token}").permitAll()
-            .requestMatchers("/todo/list-todos").permitAll()
-            .requestMatchers("/todo/add-todo").permitAll()
-            .requestMatchers("/todo/delete-todo").permitAll()
-            .requestMatchers("/todo/update-todo").permitAll()
-            .requestMatchers("/todo/filter-todos").permitAll()
-            .requestMatchers("/userDetails/home").permitAll()
+            .requestMatchers(
+                "/userDetails/**",
+                "/todo/**"
+            //    "/todo/list-todos",
+            //    "/todo/add-todo",
+             //   "/todo/delete-todo",
+            //    "/todo/update-todo",
+             //   "/todo/filter-todos"
+            ).permitAll()
             .and()
             .formLogin()
             .loginPage("/userDetails/login")
