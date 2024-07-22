@@ -63,7 +63,7 @@
         outline: none;
     }
 
-    button[type="submit"], .signup-button {
+    button[type="submit"], .signup-button, .forgot-password-button {
         background-color: #5e057e;
         color: #fff;
         padding: 12px 20px;
@@ -75,10 +75,10 @@
         transition: background-color 0.3s ease;
         margin-top: 10px;
         animation: slideIn 1s ease-in-out;
-        width: 100%;
+        width: auto;
     }
 
-    button[type="submit"]:hover, .signup-button:hover {
+    button[type="submit"]:hover, .signup-button:hover, .forgot-password-button:hover {
         background-color: #c299d0;
     }
 
@@ -214,7 +214,7 @@
             </form>
             <div class="signup-text">
                 <a class="signup-button" th:href="@{/userDetails/register}">SignUp</a>
-                <a class="forgot-password" th:href="@{/userDetails/forgotPassword}">Forgot Password?</a>
+                <a class="forgot-password-button" th:href="@{/userDetails/forgotPassword}">Forgot Password?</a>
             </div>
         </div>
     </div>
