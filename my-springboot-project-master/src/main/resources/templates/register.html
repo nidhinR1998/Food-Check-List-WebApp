@@ -13,10 +13,20 @@
         padding: 0;
         height: 100%;
         font-family: 'Roboto', sans-serif;
-        background: linear-gradient(135deg, #ff6f61, #d83f6e);
+        background: linear-gradient(135deg, #ff6f61, #ff6f61);
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    
+    .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+        width: 100%;
+        padding-right: 15px;
+        height: 95%;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-bottom: 20px;
     }
 
     .form-container {
@@ -28,6 +38,8 @@
         width: 100%;
         animation: fadeInUp 1.5s ease-in-out;
         text-align: center;
+        height: auto;
+        margin: 20px 0;
     }
 
     h2 {
@@ -127,6 +139,33 @@
             transform: translateY(0);
         }
     }
+
+    .progress {
+        height: 20px;
+        margin-top: 10px;
+    }
+
+    .progress-bar {
+        background-color: #5e057e;
+    }
+
+    .password-criteria {
+        text-align: left;
+        color: #5e057e;
+        margin-top: 10px;
+    }
+
+    .password-criteria li {
+        margin-bottom: 5px;
+    }
+
+    .password-criteria .valid {
+        color: #4caf50;
+    }
+
+    .password-criteria .invalid {
+        color: #f44336;
+    }
 </style>
 </head>
 <body>
@@ -156,12 +195,22 @@
                 </div>
                 <div class="form-group">
                     <label for="phoneNumber">Phone Number</label>
-                    <input th:field="*{phoneNumber}" type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>
+                    <input th:field="*{phoneNumber}" type="number" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>
                     <a href="#" onclick="verifyPhoneNumber()"></a>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input th:field="*{password}" type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <div class="progress">
+                        <div id="passwordStrength" class="progress-bar" role="progressbar"></div>
+                    </div>
+                    <ul class="password-criteria">
+                        <li id="length" class="invalid">At least 8 characters</li>
+                        <li id="uppercase" class="invalid">At least one uppercase letter</li>
+                        <li id="lowercase" class="invalid">At least one lowercase letter</li>
+                        <li id="number" class="invalid">At least one number</li>
+                        <li id="special" class="invalid">At least one special character</li>
+                    </ul>
                 </div>
                 <button type="submit">Register</button>
             </form>
@@ -196,6 +245,45 @@
             alert('Please enter a phone number.');
         }
     }
+
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const strengthBar = document.getElementById('passwordStrength');
+        const criteria = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+        
+        let strength = 0;
+        for (const key in criteria) {
+            const element = document.getElementById(key);
+            if (criteria[key]) {
+                element.classList.remove('invalid');
+                element.classList.add('valid');
+                strength++;
+            } else {
+                element.classList.remove('valid');
+                element.classList.add('invalid');
+            }
+        }
+
+        const strengthPercentage = (strength / Object.keys(criteria).length) * 100;
+        strengthBar.style.width = strengthPercentage + '%';
+
+        if (strengthPercentage === 100) {
+            strengthBar.classList.add('bg-success');
+            strengthBar.classList.remove('bg-warning', 'bg-danger');
+        } else if (strengthPercentage >= 60) {
+            strengthBar.classList.add('bg-warning');
+            strengthBar.classList.remove('bg-success', 'bg-danger');
+        } else {
+            strengthBar.classList.add('bg-danger');
+            strengthBar.classList.remove('bg-success', 'bg-warning');
+        }
+    });
 </script>
 </body>
 </html>

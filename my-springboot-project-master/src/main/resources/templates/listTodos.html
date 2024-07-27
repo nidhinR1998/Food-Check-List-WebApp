@@ -4,248 +4,287 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Check List</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 100px; /* Adjust for fixed navbar */
-            overflow-y: auto; /* Enable vertical scrolling */
-            max-height: calc(100vh - 160px); /* Adjust for navbar and margins */
-        }
-
-        .navbar {
-            background-color: #007bff;
-            padding: 10px 0;
-            border-bottom: 2px solid #0056b3;
-        }
-
-        .navbar a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1rem;
-        }
-
-        .navbar i {
-            margin-right: 5px;
-        }
-
-        h1 {
-            font-weight: bold;
+            background-color: #f0f8ff;
             color: #333;
-            margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 80px; /* Ensure enough space for the fixed footer */
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        .navbar-custom {
+            background: linear-gradient(45deg, #ff6f61, #d16ba5);
+            padding: 1rem;
         }
-
-        table, th, td {
-            border: 1px solid #ddd;
+        .navbar-brand, .nav-link {
+            color: #fff !important;
         }
-
-        th, td {
-            padding: 12px;
+        .navbar-toggler {
+            border-color: #fff;
+        }
+        .navbar-toggler-icon {
+            background-image: linear-gradient(45deg, #fff, #d16ba5);
+        }
+        .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        .container-custom {
+            margin-top: 80px;
             text-align: center;
         }
-
-        th {
-            background-color: #f2f2f2;
-            color: #333;
+        .container-custom h1 {
+            color: #ff6f61;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
-
-        td {
-            background-color: #fff;
-            color: #555;
+        .container-custom hr {
+            border-top: 2px solid #ff6f61;
+            width: 50%;
+            margin: 0 auto 1.5rem;
         }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        .btn-success {
-            background-color: #28a745;
+        .btn-custom {
+            background-color: #ff6f61;
+            border-color: #ff6f61;
             color: #fff;
+            transition: background-color 0.3s, transform 0.3s;
         }
-
-        .btn-success:hover {
-            background-color: #218838;
+        .btn-custom:hover {
+            background-color: #d16ba5;
+            border-color: #d16ba5;
+            transform: scale(1.05);
         }
-
-        .btn-warning {
-            background-color: #ffc107;
+        .btn-custom i {
+            margin-right: 0.5rem;
+        }
+        .footer {
+            background-color: #ff6f61;
             color: #fff;
+            text-align: center;
+            padding: .01rem;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
+        /* .table-bordered {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto; 
+        } */
+           
+        .table-bordered {
+            border: 5px solid #ffb7b7;
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto;
+       }
+        .table-bordered th, .table-bordered td {
+            text-align: center;
+            padding: 0.75rem;
         }
-
+        .thead-light th {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
         .pagination {
-            margin-top: 20px;
-            display: flex;
             justify-content: center;
-            align-items: center;
+            margin: 2rem 0;
         }
-
         .pagination-button {
-            padding: 8px 12px;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            background-color: #fff;
-            color: #007bff;
-            margin: 0 5px;
-        }
-
-        .pagination-button.active {
-            background-color: #007bff;
+            border: none;
+            background-color: #ff6f61;
             color: #fff;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
         }
-
         .pagination-button:hover {
-            background-color: #f0f0f0;
+            background-color: #d16ba5;
         }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
+        .pagination-button.active {
+            background-color: #d16ba5;
+        }
+        @media (max-width: 992px) {
+            .container-custom h1 {
+                font-size: 2rem;
             }
-
-            .btn {
+            .container-custom hr {
+                width: 70%;
+            }
+        }
+        @media (max-width: 768px) {
+            .navbar-expand-lg .navbar-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .navbar-collapse {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .navbar-nav {
+                margin-top: 0.5rem;
+            }
+            .container-custom h1 {
+                font-size: 1.5rem;
+            }
+            .container-custom hr {
+                width: 80%;
+            }
+            .table-bordered th, .table-bordered td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .pagination-button {
+                padding: 0.4rem 0.8rem;
+                margin: 0 0.1rem;
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 576px) {
+            .navbar-expand-lg .navbar-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            .navbar-custom {
+                padding: 0.5rem;
+            }
+            .btn-custom {
+                padding: 0.5rem;
                 font-size: 0.8rem;
             }
-
-            table, th, td {
-                font-size: 0.9rem;
-            }
-
-            .navbar a {
-                font-size: 0.9rem;
+            .pagination-button {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-
-<div class="navbar">
-    <a class="nav-link" href="https://nidhinr1998.github.io/nidhinportfolio/#contact">
-        <i class="fas fa-user-circle"></i> HELP!
-    </a>
-    <a class="nav-link" href="/userDetails/home">
-        <i class="fas fa-home"></i> Home
-    </a>
-    <a class="nav-link" href="/todo/list-todos">
-        <i class="fas fa-tasks"></i> Your Check List
-    </a>
-    <a class="nav-link" href="/userDetails/logout">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-</div>
-
-<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="https://nidhinr1998.github.io/nidhinportfolio/#contact">
+                <i class="fas fa-user-circle"></i> HELP!
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userDetails/home">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/todo/list-todos">
+                            <i class="fas fa-tasks"></i> Your Check List
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userDetails/logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<div class="container container-custom">
     <h1>Your Check Lists Are:</h1>
-
+    <hr>
     <div class="row mb-3">
-        <div class="col-md-3">
-            <div class="form-group">
-                <label for="filter-time">Filter by Time:</label>
-                <select id="filter-time" class="form-control">
-                    <option value="">All</option>
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
-                    <option value="night">Night</option>
-                </select>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="filter-time">Filter by Time:</label>
+                    <select id="filter-time" class="form-control">
+                        <option value="">All</option>
+                        <option value="morning">Morning</option>
+                        <option value="afternoon">Afternoon</option>
+                        <option value="night">Night</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label for="filter-received">Filter by Received:</label>
-                <select id="filter-received" class="form-control">
-                    <option value="">All</option>
-                    <option value="true">Received</option>
-                    <option value="false">Not Received</option>
-                </select>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="filter-received">Filter by Received:</label>
+                    <select id="filter-received" class="form-control">
+                        <option value="">All</option>
+                        <option value="true">Received</option>
+                        <option value="false">Not Received</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label for="filter-month">Filter by Month:</label>
-                <select id="filter-month" class="form-control">
-                    <option value="">All</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="filter-month">Filter by Month:</label>
+                    <select id="filter-month" class="form-control">
+                        <option value="">All</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3">
+            <div class="col-md-3">
             <button id="btn-apply" class="btn btn-primary btn-block mt-4"><i class="fas fa-filter"></i> Apply Filter</button>
             <button id="btn-remove-filter" class="btn btn-secondary btn-block mt-2"><i class="fas fa-filter"></i> Remove Filter</button>
         </div>
     </div>
 
-    <table id="todos-table" class="table table-bordered">
-        <thead class="thead-light">
-            <tr>
-                <th>Serial Number</th>
-                <th>Food Item</th>
-                <th>Received Date</th>
-                <th>Time</th>
-                <th>Received</th>
-                <th>Amount</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="todos-body">
-            <!-- Iterate over todos using Thymeleaf -->
-            <tr th:each="todo, iterStat : ${todos}">
-                <td th:text="${iterStat.index + 1}"></td>
-                <td th:text="${todo.description}"></td>
-                <td th:text="${todo.targetDate}"></td>
-                <td th:text="${todo.time}"></td>
-                <td th:text="${todo.received}"></td>
-                <td th:text="${todo.amount}"></td>
-                <td><a th:href="@{/todo/delete-todo(id=${todo.id})}" class="btn btn-warning"><i class="fas fa-trash-alt"></i> Delete</a></td>
-                <td><a th:href="@{/todo/update-todo(id=${todo.id})}" class="btn btn-success"><i class="fas fa-edit"></i> Update</a></td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5"><strong>Total Amount:</strong></td>
-                <td id="totalAmount" th:text="${totalAmount}"></td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
+<table id="todos-table" class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Food Item</th>
+                    <th>Received Date</th>
+                    <th>Time</th>
+                    <th>Received</th>
+                    <th>Amount</th>                  
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>          
+            <tbody id="todos-body">
+                <!-- Iterate over todos using Thymeleaf -->
+                <tr th:each="todo, iterStat : ${todos}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td th:text="${todo.description}"></td>
+                    <td th:text="${todo.targetDate}"></td>
+                    <td th:text="${todo.time}"></td>
+                    <td th:text="${todo.received}"></td>
+                    <td th:text="${todo.amount}"></td>
+                    <td><a th:href="@{/todo/delete-todo(id=${todo.id})}" class="btn btn-warning"><i class="fas fa-trash-alt"></i> Delete</a></td>
+                    <td><a th:href="@{/todo/update-todo(id=${todo.id})}" class="btn btn-success"><i class="fas fa-edit"></i> Update</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <a href="/todo/add-todo" class="btn btn-custom"><i class="fas fa-plus"></i> Add Food</a>
+                    </td>
+                    <td colspan="1"><strong>Total Amount:</strong></td>                                          
+                    <td id="totalAmount" th:text="${totalAmount}"></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
     
     <!-- Pagination -->
     <div class="pagination">
@@ -254,10 +293,15 @@
         <button class="pagination-button" id="next-page"><i class="fas fa-angle-right"></i> Next</button>
     </div>
 
-    <a href="/todo/add-todo" class="btn btn-success"><i class="fas fa-plus"></i> Add Food</a>
+    <!-- <a href="/todo/add-todo" class="btn btn-success"><i class="fas fa-plus"></i> Add Food</a> -->
 </div>
 
+<footer class="footer">
+        <p>&copy; 2024 Food Check List Application. All rights reserved.</p>
+    </footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script th:inline="javascript">
     $(document).ready(function() {

@@ -114,8 +114,8 @@ public class UserController {
 
 		try {
 			// Phone verification
-			// logger.debug("Sending SMS to phone number: {}", userDto.getPhoneNumber());
-			// twilioService.sendSms(userDto.getPhoneNumber());
+			 logger.debug("Sending SMS to phone number: {}", userDto.getPhoneNumber());
+			 twilioService.sendSms(userDto.getPhoneNumber());
 
 			// Email verification
 			String token = generateToken();
@@ -158,6 +158,8 @@ public class UserController {
 
 			redirectAttributes.addAttribute("email", userDto.getEmail());
 			redirectAttributes.addAttribute("phoneNumber", userDto.getPhoneNumber());
+			//save staging table (username,email, phoneNumber)
+			
 			return "redirect:/userDetails/verify";
 			/*
 			 * model.addAttribute("email", userDto.getEmail());
@@ -171,9 +173,10 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/verify")
+	@GetMapping("/verify")	
 	public String verify(@RequestParam String email, @RequestParam String phoneNumber, Model model) {
 		logger.debug("VerifyPage Hit for Email: {} and PhoneNumber: {}", email, phoneNumber);
+		
 		model.addAttribute("email", email);
 		model.addAttribute("phoneNumber", phoneNumber);
 		return "verify";
@@ -181,20 +184,40 @@ public class UserController {
 
 	@PostMapping("/verifyCode")
 	public String verifySmsCode(@RequestParam String phoneNumber, @RequestParam String email, @RequestParam String code,
-			Model model) {
-		logger.debug("Verifying code for email: {}", email);
-		// boolean isValid = twilioService.verifySms(phoneNumber, code);
-		boolean isValid = userService.verifyCode(email, code);
-		if (isValid) {
-			logger.debug("Eamil verification successful for Email: {}", email);
+	                            Model model) {
+	    logger.debug("Verifying code for email: {}", email);
 
-			return "login";
-		} else {
-			logger.debug("Invalid code for Email: {}", email);
-			model.addAttribute("error", "Invalid OTP");
-			return "verify";
-		}
+	    boolean isValid = false;
+
+	    try {
+	        if (code.length() == 6) {
+	            logger.debug("Verifying with Twilio service for phone number: {}", phoneNumber);
+	            isValid = twilioService.verifySms(phoneNumber, code);
+	        } else if (code.length() == 4) {
+	            logger.debug("Verifying with User service for email: {}", email);
+	            isValid = userService.verifyCode(email, code);
+	        } else {
+	            logger.debug("Invalid code length for Email: {}", email);
+	            model.addAttribute("error", "Invalid OTP length");
+	            return "verify";
+	        }
+	    } catch (Exception e) {
+	        logger.error("Error during code verification for email: {}", email, e);
+	        model.addAttribute("error", "An error occurred during verification. Please try again.");
+	        return "verify";
+	    }
+
+	    if (isValid) {
+	        logger.debug("Email/PhoneNo verification successful for user: {}", email);
+	        
+	        return "login";
+	    } else {
+	        logger.debug("Invalid code for Email: {}", email);
+	        model.addAttribute("error", "Invalid OTP");
+	        return "verify";
+	    }
 	}
+
 
 	private String generateToken() {
 		// Generate a secure token for OTP

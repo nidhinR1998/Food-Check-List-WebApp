@@ -9,106 +9,107 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
         }
-
         .navbar-custom {
-            background-color: #007bff;
-            padding: 10px 0;
-            border-bottom: 2px solid #0056b3;
+            background: linear-gradient(45deg, #ff6f61, #d16ba5);
+            padding: 1rem;
         }
-
-        .navbar-custom .nav-link {
+        .navbar-brand, .nav-link {
             color: #fff !important;
-            margin: 0 15px;
-            font-size: 1rem;
         }
-
-        .navbar-custom .nav-link:hover {
-            text-decoration: underline;
+        .navbar-toggler-icon {
+            background-image: linear-gradient(45deg, #fff, #d16ba5);
         }
-
+        .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
         .container-custom {
-            padding-top: 100px; /* Adjust padding for fixed navbar */
+            margin-top: 80px;
             text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
         }
-
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .container-custom h1 {
+            color: #ff6f61;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
-
+        .container-custom hr {
+            border-top: 2px solid #ff6f61;
+            width: 50%;
+            margin: 0 auto 1.5rem;
+        }
         .btn-custom {
-            animation: fadeInUp 1.1s ease forwards;
-            opacity: 0;
-        }
-
-        .navbar-nav {
-            width: 100%;
-            justify-content: space-around;
-        }
-
-        .navbar-brand {
+            background-color: #ff6f61;
+            border-color: #ff6f61;
             color: #fff;
-            font-size: 1.2rem;
+            transition: background-color 0.3s, transform 0.3s;
         }
-
-        .navbar-brand i {
-            margin-right: 5px;
+        .btn-custom:hover {
+            background-color: #d16ba5;
+            border-color: #d16ba5;
+            transform: scale(1.05);
+        }
+        .btn-custom i {
+            margin-right: 0.5rem;
+        }
+        .footer {
+            background-color: #ff6f61;
+            color: #fff;
+            text-align: center;
+            padding: .01rem;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="https://nidhinr1998.github.io/nidhinportfolio/#contact">
-            <i class="fas fa-user-circle"></i> HELP!
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/userDetails/home">
-                        <i class="fas fa-home"></i> Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/todo/list-todos">
-                        <i class="fas fa-tasks"></i> Your Check List
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/userDetails/logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="https://nidhinr1998.github.io/nidhinportfolio/#contact">
+                <i class="fas fa-user-circle"></i> HELP!
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userDetails/home">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/todo/list-todos">
+                            <i class="fas fa-tasks"></i> Your Check List
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userDetails/logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <div class="container container-custom">
+        <h1>Welcome: <span th:text="${username}"></span></h1>
+        <hr>
+        <p>Your Check Lists Are: <a href="/todo/list-todos" class="btn btn-custom"><i class="fas fa-tasks"></i> Manage List</a></p>
     </div>
-</nav>
 
-<div class="container container-custom">
-    <h1 class="mt-5">Welcome: <span th:text="${username}"></span></h1>
-    <hr>
-    <p>Your Check Lists Are: <a href="/todo/list-todos" class="btn btn-success btn-custom"><i class="fas fa-tasks"></i> Manage List</a></p>
-</div>
+    <footer class="footer">
+        <p>&copy; 2024 Food Check List Application. All rights reserved.</p>
+    </footer>
 
-<!-- Include the footer content here -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
