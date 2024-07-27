@@ -10,56 +10,62 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f0f8ff;
+            color: #333;
             margin: 0;
             padding: 0;
         }
-
+        
         .navbar-custom {
-            background-color: #007bff;
-            padding: 10px 0;
-            border-bottom: 2px solid #0056b3;
+            background: linear-gradient(45deg, #ff6f61, #d16ba5);
+            padding: 1rem;
+            border-bottom: 2px solid #d16ba5;
         }
-
-        .navbar-custom .nav-link {
+        
+        .navbar-brand, .nav-link {
             color: #fff !important;
-            margin: 0 15px;
-            font-size: 1rem;
         }
-
-        .navbar-custom .nav-link:hover {
-            text-decoration: underline;
+        
+        .navbar-toggler-icon {
+            background-image: linear-gradient(45deg, #fff, #d16ba5);
         }
-
+        
+        .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
         .container-custom {
-            padding-top: 100px; /* Adjust padding for fixed navbar */
+            margin-top: 80px;
             text-align: center;
-            max-width: 600px; /* Adjusted for your form container */
-            margin: 100px auto 20px auto; /* Adjusted margin to center container */
+            max-width: 600px;
+            margin: 100px auto 20px auto;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             padding: 20px;
         }
-
+        
         h1 {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
+            color: #ff6f61;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
-
+        
         form {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
+        
         label {
             font-weight: bold;
             color: #555555;
             margin-bottom: 5px;
         }
-
+        
         input[type="text"], select {
             padding: 10px;
             border: 1px solid #cccccc;
@@ -67,28 +73,38 @@
             font-size: 16px;
             width: 100%;
         }
-
+        
         .text-warning {
             color: #ff8800;
         }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
+        
+        .btn-custom {
+            background-color: #ff6f61;
+            border-color: #ff6f61;
             color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            margin-top: 20px;
-            display: inline-block;
+            transition: background-color 0.3s, transform 0.3s;
         }
-
-        .btn:hover {
-            background-color: #218838;
+        
+        .btn-custom:hover {
+            background-color: #d16ba5;
+            border-color: #d16ba5;
+            transform: scale(1.05);
         }
-
+        
+        .btn-custom i {
+            margin-right: 0.5rem;
+        }
+        
+        .footer {
+            background-color: #ff6f61;
+            color: #fff;
+            text-align: center;
+            padding: .01rem;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        
         @keyframes fadeInUp {
             0% {
                 opacity: 0;
@@ -99,24 +115,16 @@
                 transform: translateY(0);
             }
         }
-
+        
         .btn-custom {
             animation: fadeInUp 1.1s ease forwards;
             opacity: 0;
         }
 
-        .navbar-nav {
-            width: 100%;
-            justify-content: space-around;
-        }
-
-        .navbar-brand {
-            color: #fff;
-            font-size: 1.2rem;
-        }
-
-        .navbar-brand i {
-            margin-right: 5px;
+        .pikaday {
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -165,7 +173,7 @@
 
         <fieldset>
             <label for="targetDate">Received Date</label>
-            <input type="text" th:field="*{targetDate}" id="targetDate" required/>
+            <input type="text" th:field="*{targetDate}" id="targetDate" required class="pikaday"/>
             <div th:if="${#fields.hasErrors('targetDate')}" class="text-warning">
                 <p th:errors="*{targetDate}"></p>
             </div>
@@ -173,7 +181,7 @@
 
         <fieldset>
             <label for="time">Time</label>
-            <select th:field="*{time}" id="time" required>            
+            <select th:field="*{time}" id="time" required>
                 <option value="morning">Morning</option>
                 <option value="afternoon">Afternoon</option>
                 <option value="night">Night</option>
@@ -198,6 +206,10 @@
         <input type="submit" class="btn btn-custom" value="Submit" />
     </form>
 </div>
+
+<footer class="footer">
+    <p>&copy; 2024 Food Check List Application. All rights reserved.</p>
+</footer>
 
 <!-- Include Pikaday JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>

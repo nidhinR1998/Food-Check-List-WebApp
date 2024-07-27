@@ -195,28 +195,50 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean verifyCode(String email, String code) {
-		User user = userRepository.findByEmail(email);
-		if (user == null) {
-			return false; // User not found
-		}
+		if ((email == null || email.isBlank()) && (code != null && !code.isEmpty())) {
+			try {
+				int otpCode = Integer.parseInt(code);
+				User user = userRepository.findByOtpCode(otpCode);
 
-		try {
-			int otpCode = Integer.parseInt(code);
-			if (user.getOtpCode() == otpCode) {
-				if (user != null) {
+				if (user != null && user.getOtpCode() == otpCode) {
 					user.setOtpCode(0);
 					user.setResetToken(null);
 					userRepository.save(user);
-					logger.debug("After Varification Token and code id removed for user: {}", user.getUsername());
+					logger.debug("After verification, token and code removed for user: {}", user.getUsername());
+					return true;
+				} else {
+					logger.debug("Invalid OTP format: {}", code);
+					return false;
 				}
-				return true;
-			} else {
-				logger.debug("Invalid OTP format: {}", code);
+			} catch (NumberFormatException e) {
+				logger.error("Invalid OTP format: {}", code, e);
 				return false;
 			}
-		} catch (NumberFormatException e) {
-			logger.error("Invalid OTP format: {}", code, e);
-			return false;
+		} else {
+			User user = userRepository.findByEmail(email);
+
+			if (user == null || code == null) {
+				return false;
+			}
+
+			try {
+				int otpCode = Integer.parseInt(code);
+
+				if (user.getOtpCode() == otpCode) {
+					user.setOtpCode(0);
+					user.setResetToken(null);
+					userRepository.save(user);
+					logger.debug("After verification, token and code removed for user: {}", user.getUsername());
+					return true;
+				} else {
+					logger.debug("Invalid OTP format: {}", code);
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				logger.error("Invalid OTP format: {}", code, e);
+				return false;
+			}
 		}
 	}
+
 }
