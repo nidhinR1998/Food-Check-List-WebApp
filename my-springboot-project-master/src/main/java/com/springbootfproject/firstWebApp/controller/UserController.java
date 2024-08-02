@@ -1,13 +1,13 @@
 package com.springbootfproject.firstWebApp.controller;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.springbootfproject.firstWebApp.Util.EncryptionUtil;
 import com.springbootfproject.firstWebApp.dto.UserDto;
 import com.springbootfproject.firstWebApp.repository.UserRepository;
 import com.springbootfproject.firstWebApp.service.TodoService;
@@ -29,7 +30,6 @@ import com.springbootfproject.firstWebApp.service.TwilioService;
 import com.springbootfproject.firstWebApp.service.UserService;
 import com.springbootfproject.firstWebApp.todomodel.User;
 
-import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -42,19 +42,15 @@ public class UserController {
 
 	@Autowired
 	private TodoService service;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private JavaMailSender mailSender;
-
 	@Autowired
 	private TwilioService twilioService;
+	@Autowired
+	private final EncryptionUtil encryptionUtil;
 
 	private UserService userService;
 
-	public UserController(UserService userService) {
+	public UserController(UserService userService, EncryptionUtil encryptionUtil) {
+		this.encryptionUtil = null;
 		this.userService = userService;
 	}
 
@@ -101,126 +97,119 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registerSave(@ModelAttribute("user") UserDto userDto, Model model,
-			RedirectAttributes redirectAttributes) {
-		logger.debug("Register Save Hit for User: {}", userDto.getUsername());
+	public String registerSave(@ModelAttribute("user") UserDto userDto, Model model, RedirectAttributes redirectAttributes) {
+	    logger.debug("Register Save Hit for User: {}", userDto.getUsername());
 
-		User existingUser = userService.findByUsername(userDto.getUsername());
-		if (existingUser != null) {
-			logger.debug("User already exists: {}", userDto.getUsername());
-			model.addAttribute("userExists", true);
-			return "register";
-		}
+	    User existingUser = userService.findByUsername(userDto.getUsername());
+	    if (existingUser != null) {
+	        logger.debug("User already exists: {}", userDto.getUsername());
+	        model.addAttribute("userExists", true);
+	        return "register";
+	    }
 
-		try {
-			// Phone verification
-			 logger.debug("Sending SMS to phone number: {}", userDto.getPhoneNumber());
-			 twilioService.sendSms(userDto.getPhoneNumber());
+	    Map<String, Object> response = userService.handleUserRegistration(userDto);
 
-			// Email verification
-			String token = generateToken();
-			int otp = (int) (Math.random() * 9000) + 1000;
-			logger.debug("Generated OTP for email verification: {}", otp);
+	    if (response.containsKey("errorMessage")) {
+	        model.addAttribute("errorMessage", response.get("errorMessage"));
+	        return "register";
+	    }
 
-			// temporary token
-			userDto.setOtpCode(otp);
-			userDto.setResetToken(token);
-			userService.save(userDto);
-			String htmlContent = "<html>" + "<head><style>"
-					+ "body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }"
-					+ ".container { width: 80%; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); position: relative; }"
-					+ ".container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://www.transparenttextures.com/patterns/scream.png'); opacity: 0.2; z-index: -1; }"
-					+ "h1 { color: #4CAF50; font-size: 24px; }"
-					+ ".reminder-tag { background-color: #ff5722; color: #fff; font-size: 14px; padding: 5px 10px; border-radius: 3px; display: inline-block; margin-bottom: 20px; font-weight: bold; }"
-					+ "p { font-size: 16px; line-height: 1.5; margin: 10px 0; font-weight: bold; }"
-					+ "a { color: #ff9800; background-color: #ff9800; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block; font-size: 18px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: box-shadow 0.3s ease-in-out; }"
-					+ "a:hover { background-color: #ffb74d; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); }"
-					+ ".highlight { background-color: #eaf3fc; padding: 10px; border-radius: 5px; }"
-					+ ".info-box { border: 1px solid #eaf3fc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; }"
-					+ ".info-box p { margin: 5px 0; }" + ".info-box strong { color: #4CAF50; }"
-					+ ".highlight p { font-style: italic; color: #ff9800; }"
-					+ "footer { font-size: 14px; color: #777; margin-top: 20px; font-weight: bold; text-align: left; }"
-					+ "</style></head>" + "<body>" + "<div class='container'>" + "<h1>Email Verification Request</h1>"
-					+ "<p>Hi <strong>" + userDto.getFullname() + "</strong>,</p>"
-					+ "<p>We received your request for Email verification . Use the OTP below to complete your Registration:</p>"
-					+ "<p class='reminder-tag'>Your OTP: <strong>" + otp + "</strong></p>" + "<div class='info-box'>"
-					+ "<p class='highlight'><em><strong>Note:</strong> This is an automated message. Please do not reply to this email.</em></p>"
-					+ "</div>" + "<footer>" + "<p>Thanks and regards,</p>" + "<p>Your Food Check List Team</p>"
-					+ "<p>Have a nice day!</p>" + "</footer>" + "</div>" + "</body></html>";
+	    redirectAttributes.addAttribute("email", response.get("email"));
+	    redirectAttributes.addAttribute("phoneNumber", response.get("phoneNumber"));
+	    redirectAttributes.addAttribute("token", response.get("token"));
+	    redirectAttributes.addFlashAttribute("otpMessage", response.get("otpMessage"));
 
-			MimeMessage mimeMessage = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-			helper.setTo(userDto.getEmail());
-			helper.setSubject("Email Verification");
-			helper.setText(htmlContent, true);
-			logger.debug("Sending email to: {}", userDto.getEmail());
-			mailSender.send(mimeMessage);
-
-			redirectAttributes.addAttribute("email", userDto.getEmail());
-			redirectAttributes.addAttribute("phoneNumber", userDto.getPhoneNumber());
-			//save staging table (username,email, phoneNumber)
-			
-			return "redirect:/userDetails/verify";
-			/*
-			 * model.addAttribute("email", userDto.getEmail());
-			 * model.addAttribute("phoneNumber", userDto.getPhoneNumber()); return "verify";
-			 */
-
-		} catch (Exception e) {
-			logger.error("Error during registration process: {}", e.getMessage(), e);
-			model.addAttribute("errorMessage", "An error occurred during registration. Please try again.");
-			return "register";
-		}
+	    return "redirect:/userDetails/verify";
 	}
 
-	@GetMapping("/verify")	
-	public String verify(@RequestParam String email, @RequestParam String phoneNumber, Model model) {
+
+	@GetMapping("/verify")
+	public String verify(@RequestParam String email, @RequestParam String phoneNumber,@RequestParam String token, Model model) {
 		logger.debug("VerifyPage Hit for Email: {} and PhoneNumber: {}", email, phoneNumber);
-		
+
 		model.addAttribute("email", email);
 		model.addAttribute("phoneNumber", phoneNumber);
+		model.addAttribute("token", token);
 		return "verify";
 	}
 
 	@PostMapping("/verifyCode")
-	public String verifySmsCode(@RequestParam String phoneNumber, @RequestParam String email, @RequestParam String code,
-	                            Model model) {
-	    logger.debug("Verifying code for email: {}", email);
+    public String verifySmsCode(@RequestParam String phoneNumber, @RequestParam String email, @RequestParam String code, @RequestParam String token,
+                                Model model, RedirectAttributes redirectAttributes) {
+        logger.debug("Verifying code for email: {}", email);
 
-	    boolean isValid = false;
+        boolean isValid = false;
 
-	    try {
-	        if (code.length() == 6) {
-	            logger.debug("Verifying with Twilio service for phone number: {}", phoneNumber);
-	            isValid = twilioService.verifySms(phoneNumber, code);
-	        } else if (code.length() == 4) {
-	            logger.debug("Verifying with User service for email: {}", email);
-	            isValid = userService.verifyCode(email, code);
-	        } else {
-	            logger.debug("Invalid code length for Email: {}", email);
-	            model.addAttribute("error", "Invalid OTP length");
-	            return "verify";
-	        }
-	    } catch (Exception e) {
-	        logger.error("Error during code verification for email: {}", email, e);
-	        model.addAttribute("error", "An error occurred during verification. Please try again.");
-	        return "verify";
-	    }
+        try {
+            
+            String decryptedEmail = encryptionUtil.decrypt(email);
+            String decryptedPhoneNumber = encryptionUtil.decrypt(phoneNumber);
+            String decryptedToken = encryptionUtil.decrypt(token);
+
+            if (code.length() == 6) {
+                logger.debug("Verifying with Twilio service for phone number: {}", decryptedPhoneNumber);
+                isValid = twilioService.verifySms(decryptedPhoneNumber, code);
+            } else if (code.length() == 4) {
+                logger.debug("Verifying with User service for email: {}", decryptedEmail);
+                isValid = userService.verifyCode(decryptedEmail, code);
+            } else {
+                logger.debug("Invalid code length for Email: {}", decryptedEmail);
+                redirectAttributes.addFlashAttribute("error", "Invalid OTP length");
+
+                // Encrypting data
+                String encryptedEmail = encryptionUtil.encrypt(decryptedEmail);
+                String encryptedPhoneNumber = encryptionUtil.encrypt(decryptedPhoneNumber);
+                String encryptedToken = encryptionUtil.encrypt(decryptedToken);
+
+                redirectAttributes.addAttribute("email", encryptedEmail);
+                redirectAttributes.addAttribute("phoneNumber", encryptedPhoneNumber);
+                redirectAttributes.addAttribute("token", encryptedToken);
+                return "redirect:/userDetails/verify";
+            }
+        } catch (Exception e) {
+            logger.error("Error during code verification for email: {}", email, e);
+            redirectAttributes.addFlashAttribute("error", "An error occurred during verification. Please try again.");
+
+            // Encrypting data
+            try {
+                String encryptedEmail = encryptionUtil.encrypt(email);
+                String encryptedPhoneNumber = encryptionUtil.encrypt(phoneNumber);
+                String encryptedToken = encryptionUtil.encrypt(token);
+
+                redirectAttributes.addAttribute("email", encryptedEmail);
+                redirectAttributes.addAttribute("phoneNumber", encryptedPhoneNumber);
+                redirectAttributes.addAttribute("token", encryptedToken);
+            } catch (Exception ex) {
+                logger.error("Error encrypting data: {}", ex.getMessage(), ex);
+            }
+            return "redirect:/userDetails/verify";
+        }
 
 	    if (isValid) {
 	        logger.debug("Email/PhoneNo verification successful for user: {}", email);
-	        
-	        return "login";
+	        redirectAttributes.addFlashAttribute("success", "Email/PhoneNo verification successful");
+	        return "redirect:/login";
 	    } else {
 	        logger.debug("Invalid code for Email: {}", email);
-	        model.addAttribute("error", "Invalid OTP");
-	        return "verify";
+	        
+	        try {
+                String encryptedEmail = encryptionUtil.encrypt(email);
+                String encryptedPhoneNumber = encryptionUtil.encrypt(phoneNumber);
+                String encryptedToken = encryptionUtil.encrypt(token);
+
+                redirectAttributes.addAttribute("email", encryptedEmail);
+                redirectAttributes.addAttribute("phoneNumber", encryptedPhoneNumber);
+                redirectAttributes.addAttribute("token", encryptedToken);
+            } catch (Exception ex) {
+                logger.error("Error encrypting data: {}", ex.getMessage(), ex);
+            }
+	        return "redirect:/userDetails/verify";
 	    }
 	}
 
 
 	private String generateToken() {
-		// Generate a secure token for OTP
+		
 		String token = UUID.randomUUID().toString();
 		logger.debug("Generated Token: {}", token);
 		return token;
