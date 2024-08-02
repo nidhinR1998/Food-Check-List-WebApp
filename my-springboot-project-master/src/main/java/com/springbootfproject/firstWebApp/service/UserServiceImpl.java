@@ -1,5 +1,7 @@
 package com.springbootfproject.firstWebApp.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -7,14 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailAuthenticationException;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.springbootfproject.firstWebApp.Util.EncryptionUtil;
 import com.springbootfproject.firstWebApp.dto.UserDto;
 import com.springbootfproject.firstWebApp.repository.UserRepository;
 import com.springbootfproject.firstWebApp.todomodel.User;
@@ -25,25 +25,32 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Value("${application.base-url}")
-	private String baseUrl;
+    @Value("${application.base-url}")
+    private String baseUrl;
 
-	@Value("${application.reset-password-path}")
-	private String resetPasswordPath;
+    @Value("${application.reset-password-path}")
+    private String resetPasswordPath;
 
-	@Autowired
-	PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private JavaMailSender mailSender;
+    @Autowired
+    private JavaMailSender mailSender;
 
-	private UserRepository userRepository;
+    @Autowired
+    private TwilioService twilioService;
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private final EncryptionUtil encryptionUtil;
 
-	public UserServiceImpl(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+    private final UserRepository userRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, EncryptionUtil encryptionUtil) {
+        this.userRepository = userRepository;
+        this.encryptionUtil = encryptionUtil;
+    }
 
 	@Override
 	public User findByUsername(String username) {
@@ -61,18 +68,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User save(UserDto userDto) {
-		User user = new User();
-		user.setUsername(userDto.getUsername());
-		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		user.setFullname(userDto.getFullname());
-		user.setPhoneNumber(userDto.getPhoneNumber());
-		user.setEmail(userDto.getEmail());
-		user.setResetToken(userDto.getResetToken());
-		user.setOtpCode(userDto.getOtpCode());
-		return userRepository.save(user);
-	}
-
+    public User save(UserDto userDto) {
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setFullname(userDto.getFullname());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setEmail(userDto.getEmail());
+        user.setResetToken(userDto.getResetToken());
+        user.setOtpCode(userDto.getOtpCode());
+        return userRepository.save(user);
+    }
+	
 	@Override
 	public void updateTokenByEmail(String email, String token) {
 		User user = userRepository.findByEmail(email);
@@ -103,7 +110,6 @@ public class UserServiceImpl implements UserService {
 			user.setResetToken(resetToken);
 			user.setOtpCode(otp);
 			userRepository.save(user);
-
 			String htmlContent = "<html>" + "<head><style>"
 					+ "body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }"
 					+ ".container { width: 80%; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); position: relative; }"
@@ -204,7 +210,7 @@ public class UserServiceImpl implements UserService {
 					user.setOtpCode(0);
 					user.setResetToken(null);
 					userRepository.save(user);
-					logger.debug("After verification, token and code removed for user: {}", user.getUsername());
+					logger.debug("After verification, token and code removed for user: {}", user.getFullname());
 					return true;
 				} else {
 					logger.debug("Invalid OTP format: {}", code);
@@ -239,6 +245,113 @@ public class UserServiceImpl implements UserService {
 				return false;
 			}
 		}
+	}
+
+	@Override
+	public Map<String, Object> handleUserRegistration(UserDto userDto) {
+		Map<String, Object> response = new HashMap<>();
+		boolean isSmsOtpSent = false;
+		boolean isEmailOtpSent = false;
+
+		try {
+			String token = generateToken();
+			int otp = (int) (Math.random() * 9000) + 1000;
+			userDto.setOtpCode(otp);
+			userDto.setResetToken(token);
+			User Dbuser = new User();
+			Dbuser.setUsername(userDto.getUsername());
+			Dbuser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+			Dbuser.setFullname(userDto.getFullname());
+			Dbuser.setPhoneNumber(userDto.getPhoneNumber());
+			Dbuser.setEmail(userDto.getEmail());
+			Dbuser.setResetToken(userDto.getResetToken());
+			Dbuser.setOtpCode(userDto.getOtpCode());
+			userRepository.save(Dbuser);
+
+			logger.debug("Sending SMS to phone number: {}", userDto.getPhoneNumber());
+			
+			try {
+				twilioService.sendSms(userDto.getPhoneNumber());
+				isSmsOtpSent = true;
+			} catch (Exception e) {
+				logger.error("Failed to send SMS OTP: {}", e.getMessage());
+			}
+
+			logger.debug("Generated OTP for email verification: {}", otp);
+			String htmlContent = generateEmailContent(userDto.getFullname(), otp);
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+			helper.setTo(userDto.getEmail());
+			helper.setSubject("Email Verification");
+			helper.setText(htmlContent, true);
+			logger.debug("Sending email to: {}", userDto.getEmail());
+			mailSender.send(mimeMessage);
+			isEmailOtpSent = true;
+
+			
+			try {
+				String encryptedEmail = encryptionUtil.encrypt(userDto.getEmail());
+				String encryptedPhoneNumber = encryptionUtil.encrypt(userDto.getPhoneNumber());
+				String encryptedToken = encryptionUtil.encrypt(token);
+
+				response.put("email", encryptedEmail);
+				response.put("phoneNumber", encryptedPhoneNumber);
+				response.put("token", encryptedToken);
+			} catch (Exception e) {
+				logger.error("Error encrypting data: {}", e.getMessage(), e);
+				response.put("errorMessage", "An error occurred during registration. Please try again.");
+				return response;
+			}
+
+			// Set messages based on OTP sending status
+			if (isSmsOtpSent && isEmailOtpSent) {
+				response.put("otpMessage", "Both OTP to email and phone have been sent.");
+			} else if (isSmsOtpSent) {
+				response.put("otpMessage", "OTP to phone has been sent.");
+			} else if (isEmailOtpSent) {
+				response.put("otpMessage", "OTP to email has been sent.");
+			} else {
+				response.put("errorMessage", "Failed to send OTP. Please try again.");
+			}
+
+		} catch (Exception e) {
+			logger.error("Error during registration process: {}", e.getMessage(), e);
+			response.put("errorMessage", "An error occurred during registration. Please try again.");
+		}
+
+		return response;
+	}
+
+	private String generateToken() {
+		
+		String token = UUID.randomUUID().toString();
+		logger.debug("Generated Token: {}", token);
+		return token;
+	}
+
+	private String generateEmailContent(String fullName, int otp) {
+		return "<html><head><style>"
+				+ "body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }"
+				+ ".container { width: 80%; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); position: relative; }"
+				+ ".container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://www.transparenttextures.com/patterns/scream.png'); opacity: 0.2; z-index: -1; }"
+				+ "h1 { color: #4CAF50; font-size: 24px; }"
+				+ ".reminder-tag { background-color: #ff5722; color: #fff; font-size: 14px; padding: 5px 10px; border-radius: 3px; display: inline-block; margin-bottom: 20px; font-weight: bold; }"
+				+ "p { font-size: 16px; line-height: 1.5; margin: 10px 0; font-weight: bold; }"
+				+ "a { color: #ff9800; background-color: #ff9800; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block; font-size: 18px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: box-shadow 0.3s ease-in-out; }"
+				+ "a:hover { background-color: #ffb74d; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); }"
+				+ ".highlight { background-color: #eaf3fc; padding: 10px; border-radius: 5px; }"
+				+ ".info-box { border: 1px solid #eaf3fc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; }"
+				+ ".info-box p { margin: 5px 0; }" + ".info-box strong { color: #4CAF50; }"
+				+ ".highlight p { font-style: italic; color: #ff9800; }"
+				+ "footer { font-size: 14px; color: #777; margin-top: 20px; font-weight: bold; text-align: left; }"
+				+ "</style></head><body>" + "<div class='container'>" + "<h1>Email Verification Request</h1>"
+				+ "<p>Hi <strong>" + fullName + "</strong>,</p>"
+				+ "<p>We received your request for Email verification. Use the OTP below to complete your Registration:</p>"
+				+ "<p class='reminder-tag'>Your OTP: <strong>" + otp + "</strong></p>" + "<div class='info-box'>"
+				+ "<p class='highlight'><em><strong>Note:</strong> This is an automated message. Please do not reply to this email.</em></p>"
+				+ "</div>"
+				+ "<footer><p>Thanks and regards,</p><p>Your Food Check List Team</p><p>Have a nice day!</p></footer>"
+				+ "</div></body></html>";
 	}
 
 }

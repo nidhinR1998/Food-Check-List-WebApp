@@ -214,6 +214,9 @@
                 </div>
                 <button type="submit">Register</button>
             </form>
+             <!-- Display error or success messages -->
+            <div class="alert alert-danger" th:if="${error}" role="alert" th:text="${error}"></div>
+            <div class="alert alert-success" th:if="${success}" role="alert" th:text="${success}"></div>
             <span>Already Registered? <a th:href="@{/userDetails/login}">Login</a></span>
         </div>
     </div>

@@ -12,7 +12,7 @@ public class UserDto {
     // Constructors, getters, setters
     public UserDto() {
     }
-
+    
     public UserDto(String fullname, String username, String password,String phoneNumber,String email, String resetToken, int otpCode) {
         this.fullname = fullname;
         this.username = username;

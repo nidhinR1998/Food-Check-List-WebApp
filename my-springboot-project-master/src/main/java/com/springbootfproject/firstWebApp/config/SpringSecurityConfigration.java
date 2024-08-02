@@ -32,18 +32,15 @@ public class SpringSecurityConfigration {
             .authorizeHttpRequests()
             .requestMatchers(
                 "/userDetails/**",
-                "/todo/**"
-            //    "/todo/list-todos",
-            //    "/todo/add-todo",
-             //   "/todo/delete-todo",
-            //    "/todo/update-todo",
-             //   "/todo/filter-todos"
+                "/todo/**",
+                "/api/payment/**"
+                
             ).permitAll()
             .and()
             .formLogin()
             .loginPage("/userDetails/login")
             .loginProcessingUrl("/userDetails/login")
-            .defaultSuccessUrl("/userDetails/home", true)
+            .defaultSuccessUrl("/userDetails/home", true)           
             .permitAll()
             .and()
             .logout()

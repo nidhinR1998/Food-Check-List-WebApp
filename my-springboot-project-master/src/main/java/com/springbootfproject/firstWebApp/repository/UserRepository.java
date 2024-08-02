@@ -3,6 +3,7 @@ package com.springbootfproject.firstWebApp.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.springbootfproject.firstWebApp.dto.UserDto;
 import com.springbootfproject.firstWebApp.todomodel.User;
 
 @Repository
