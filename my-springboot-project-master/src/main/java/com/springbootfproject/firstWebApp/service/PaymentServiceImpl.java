@@ -55,7 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             // Set up UPI payment parameters
             String num = "FOOD-BILL-FOR-THE-MONTH: " + monthValue;
-            String upiLink = "upi://pay?pa=sanithanair137-1@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
+            String upiLink = "upi://pay?pa=sanithanair137-1@okicici&pn=NidhinR&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
            // String upiLink = "upi://pay?pa=nidhinrajesh1998-2@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num + "&url=" + redirectionUrl;
             
             // Generate QR code image
