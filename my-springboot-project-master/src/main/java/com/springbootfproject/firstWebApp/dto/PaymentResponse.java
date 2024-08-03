@@ -5,7 +5,9 @@ public class PaymentResponse {
     private String qrCodeImage;
     private String transactionId;  // Add this field
     private String message; // Add this field to handle error messages
-
+    private String googlePayUrl;
+    private String phonePeUrl;
+    
     public String getUpiUrl() {
         return upiUrl;
     }
@@ -36,6 +38,22 @@ public class PaymentResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+
+	public String getGooglePayUrl() {
+		return googlePayUrl;
+	}
+
+	public void setGooglePayUrl(String googlePayUrl) {
+		this.googlePayUrl = googlePayUrl;
+	}
+
+	public String getPhonePeUrl() {
+		return phonePeUrl;
+	}
+
+	public void setPhonePeUrl(String phonePeUrl) {
+		this.phonePeUrl = phonePeUrl;
+	}
 
 	
 }

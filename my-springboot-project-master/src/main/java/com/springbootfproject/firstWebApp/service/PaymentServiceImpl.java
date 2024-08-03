@@ -35,6 +35,54 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private TodoRepository todoRepository;
 
+	/*
+	 * @Override public PaymentResponse generatePaymentRequest(PaymentRequest
+	 * paymentRequest) { PaymentResponse paymentResponse = new PaymentResponse();
+	 * try { // Check if there are any pending transactions for the user
+	 * List<Transaction> pendingTransactions =
+	 * transactionRepository.findByUsernameAndStatus(paymentRequest.getUsername(),
+	 * "PENDING"); if (!pendingTransactions.isEmpty()) { throw new
+	 * PaymentException("User has pending transactions. Please complete them before proceeding."
+	 * ); }
+	 * 
+	 * // Generate a unique 9-digit transaction ID String uniqueTid =
+	 * generateUniqueTransactionId(); String redirectionUrl =
+	 * "https://food-check-list.up.railway.app/api/payment/status";
+	 * logger.info("Generated redirection URL: {}", redirectionUrl);
+	 * 
+	 * // Determine the month value String monthValue =
+	 * determineMonth(paymentRequest.getUsername());
+	 * 
+	 * // Set up UPI payment parameters String num = "FOOD-BILL-FOR-THE-MONTH: " +
+	 * monthValue; String upiLink = "upi://pay?pa=7356324654@axisb&pn=Sanitha&am=" +
+	 * paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl; //
+	 * String upiLink = "upi://pay?pa=nidhinrajesh1998-2@okicici&pn=NidhinR&tid=" +
+	 * uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num + "&url=" +
+	 * redirectionUrl;
+	 * 
+	 * // Generate QR code image String qrCodeImage = generateQRCodeImage(upiLink);
+	 * 
+	 * paymentResponse.setUpiUrl(upiLink);
+	 * paymentResponse.setQrCodeImage(qrCodeImage);
+	 * logger.info("Generated UPI URL: {}", upiLink);
+	 * logger.info("Generated QR Code Image: {}", qrCodeImage);
+	 * 
+	 * // Save transaction details Transaction transaction = new Transaction();
+	 * transaction.setTransactionId(uniqueTid);
+	 * transaction.setUsername(paymentRequest.getUsername());
+	 * transaction.setAmount(paymentRequest.getAmount());
+	 * transaction.setUpiUrl(upiLink); transaction.setStatus("PENDING");
+	 * transactionRepository.save(transaction);
+	 * 
+	 * // Log the saved transaction logger.info("Transaction saved: {}",
+	 * transaction); } catch (PaymentException e) {
+	 * logger.error("Error generating UPI URL", e); throw e; } catch (Exception e) {
+	 * logger.error("Error generating UPI URL", e); throw new
+	 * PaymentException("Error generating UPI URL", e); }
+	 * 
+	 * return paymentResponse; }
+	 */
+    
     @Override
     public PaymentResponse generatePaymentRequest(PaymentRequest paymentRequest) {
         PaymentResponse paymentResponse = new PaymentResponse();
@@ -45,7 +93,7 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new PaymentException("User has pending transactions. Please complete them before proceeding.");
             }
 
-         // Generate a unique 9-digit transaction ID
+            // Generate a unique 9-digit transaction ID
             String uniqueTid = generateUniqueTransactionId();
             String redirectionUrl = "https://food-check-list.up.railway.app/api/payment/status";
             logger.info("Generated redirection URL: {}", redirectionUrl);
@@ -55,15 +103,21 @@ public class PaymentServiceImpl implements PaymentService {
 
             // Set up UPI payment parameters
             String num = "FOOD-BILL-FOR-THE-MONTH: " + monthValue;
-            String upiLink = "upi://pay?pa=sanithanair137-1@okicici&pn=Sanitha&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
-           // String upiLink = "upi://pay?pa=nidhinrajesh1998-2@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num + "&url=" + redirectionUrl;
-            
-            // Generate QR code image
-            String qrCodeImage = generateQRCodeImage(upiLink);
+            double amount = paymentRequest.getAmount();
+            String payee = "7356324654@axisb";
+            String payeeName = "Nidhin R";
 
-            paymentResponse.setUpiUrl(upiLink);
+            String googlePayLink = "tez://upi/pay?pa=" + payee + "&pn=" + payeeName + "&am=" + amount + "&tn=" + num + "&url=" + redirectionUrl;
+            String phonePeLink = "phonepe://upi/pay?pa=" + payee + "&pn=" + payeeName + "&am=" + amount + "&tn=" + num + "&url=" + redirectionUrl;
+
+            // Generate QR code image
+            String qrCodeImage = generateQRCodeImage(googlePayLink); // Use Google Pay link for QR code
+
+            paymentResponse.setGooglePayUrl(googlePayLink);
+            paymentResponse.setPhonePeUrl(phonePeLink);
             paymentResponse.setQrCodeImage(qrCodeImage);
-            logger.info("Generated UPI URL: {}", upiLink);
+            logger.info("Generated Google Pay URL: {}", googlePayLink);
+            logger.info("Generated PhonePe URL: {}", phonePeLink);
             logger.info("Generated QR Code Image: {}", qrCodeImage);
 
             // Save transaction details
@@ -71,7 +125,7 @@ public class PaymentServiceImpl implements PaymentService {
             transaction.setTransactionId(uniqueTid);
             transaction.setUsername(paymentRequest.getUsername());
             transaction.setAmount(paymentRequest.getAmount());
-            transaction.setUpiUrl(upiLink);
+            transaction.setUpiUrl(googlePayLink); // Save Google Pay URL as UPI URL
             transaction.setStatus("PENDING");
             transactionRepository.save(transaction);
             
@@ -87,6 +141,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         return paymentResponse;
     }
+
 
     private String generateUniqueTransactionId() {
         Random random = new Random();
