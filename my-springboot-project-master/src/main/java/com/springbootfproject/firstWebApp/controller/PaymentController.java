@@ -2,7 +2,9 @@ package com.springbootfproject.firstWebApp.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springbootfproject.firstWebApp.Util.PaymentException;
 import com.springbootfproject.firstWebApp.dto.PaymentRequest;
@@ -73,31 +75,54 @@ public class PaymentController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
-    @RequestMapping(value="/status", method = RequestMethod.GET)
-    public String paymentStatus(@RequestParam(value = "transactionId", required = false) String transactionId,
-                                @RequestParam(value = "status", required = false) String status,
-                                @RequestParam(value = "message", required = false) String message,
-                                Model model) {
-        logger.debug("Payment status endpoint hit with transactionId: {}, status: {}, message: {}", transactionId, status, message);
-        if (transactionId != null) {
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> paymentStatus(
+        @RequestParam(value = "transactionId", required = false) String transactionId,
+        @RequestParam(value = "upiTxnId", required = false) String upiTxnId,
+        @RequestParam(value = "status", required = false) String status,
+        @RequestParam(value = "message", required = false) String message) {
+        
+        Map<String, String> response = new HashMap<>();
+        logger.debug("Payment status endpoint hit with transactionId: {}, upiTxnId: {}, status: {}, message: {}", transactionId, upiTxnId, status, message);
+        
+        if (transactionId != null && upiTxnId != null) {
             try {
-                paymentService.updateTransactionStatus(transactionId, status);
-                model.addAttribute("status", "success");
-                model.addAttribute("message", "Payment status updated successfully");
+                paymentService.updateTransactionStatus(transactionId, upiTxnId, status);
+                response.put("status", "success");
+                response.put("message", "Payment status updated successfully");
             } catch (PaymentException e) {
                 logger.error("Error updating payment status", e);
-                model.addAttribute("status", "error");
-                model.addAttribute("message", e.getMessage());
+                response.put("status", "error");
+                response.put("message", e.getMessage());
             }
         } else if (message != null) {
-            model.addAttribute("status", status);
-            model.addAttribute("message", message);
+            response.put("status", status);
+            response.put("message", message);
+        } else {
+            response.put("status", "error");
+            response.put("message", "Invalid request parameters");
         }
-        return "status";
+        
+        return ResponseEntity.ok(response);
     }
 
-    @ExceptionHandler(PaymentException.class)
-    public ResponseEntity<String> handlePaymentException1(PaymentException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    
+    @RequestMapping(value = "/manualConfirmation", method = RequestMethod.POST)
+    public String manualConfirmation(@RequestBody PaymentRequest paymentRequest, Model model) {
+        String username = paymentRequest.getUsername();
+        double amount = paymentRequest.getAmount();
+        
+        // Process the manual confirmation (e.g., save to database, generate transaction ID, etc.)
+        String transactionId = paymentService.getManualConfirmation(paymentRequest.getUsername(), paymentRequest.getAmount()); // Replace with actual transaction ID generation logic
+        
+        // Add attributes to the model
+        model.addAttribute("username", username);
+        model.addAttribute("amount", amount);
+        model.addAttribute("transactionId", transactionId);
+        
+        // Return the manualConfirmation view
+        return "manualConfirmation";
     }
+
 }

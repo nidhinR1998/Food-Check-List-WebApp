@@ -55,7 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             // Set up UPI payment parameters
             String num = "FOOD-BILL-FOR-THE-MONTH: " + monthValue;
-            String upiLink = "upi://pay?pa=sanithanair137-1@okicici&pn=NidhinR&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
+            String upiLink = "upi://pay?pa=sanithanair137-1@okicici&pn=Sanitha&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
            // String upiLink = "upi://pay?pa=nidhinrajesh1998-2@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num + "&url=" + redirectionUrl;
             
             // Generate QR code image
@@ -138,26 +138,31 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void updateTransactionStatus(String transactionId, String status) {
-        // Retrieve the transaction
+    public void updateTransactionStatus(String transactionId, String upiTxnId, String status) {
+        // Retrieve the transaction using the generated transactionId
         Transaction transaction = transactionRepository.findByTransactionId(transactionId);
         if (transaction != null) {
             logger.debug("Current transaction status: {}, New status: {}", transaction.getStatus(), status);
 
+            // Save the upiTxnId if not already saved
+            if (transaction.getUpiTxnId() == null) {
+                transaction.setUpiTxnId(upiTxnId);
+            }
+
             // Update the status only if it's different
             if (!transaction.getStatus().equalsIgnoreCase(status)) {
-                transaction.updateStatus(status);
+                transaction.setStatus(status);
                 transactionRepository.save(transaction);
                 logger.info("Transaction status updated to: {}", status);
-                
+
                 // Retrieve the updated transaction to ensure changes are persisted
                 Transaction updatedTransaction = transactionRepository.findByTransactionId(transactionId);
                 logger.debug("Updated transaction status: {}", updatedTransaction.getStatus());
 
                 // Check if the new status is 'success' and the previous status was 'PENDING'
-                if (updatedTransaction.getStatus().equals("succes")) {
+                if (updatedTransaction.getStatus().equals("success")) {
                     logger.debug("All the Food Entries will be deleted for the username: {}", transaction.getUsername());
-                    
+
                     // Perform the deletion
                     long deletedRecords = todoRepository.deleteByUsername(transaction.getUsername());
                     logger.debug("{} records deleted for the username: {}", deletedRecords, transaction.getUsername());
@@ -171,4 +176,14 @@ public class PaymentServiceImpl implements PaymentService {
             throw new PaymentException("Transaction not found");
         }
     }
+
+	@Override
+	public String getManualConfirmation(String username, double amount) {
+		
+		Transaction pendingTransactions = transactionRepository.getByUsernameAndStatus(username, "PENDING");
+		
+		String transactionId = pendingTransactions.getTransactionId();
+		return transactionId;
+	}
+
 }
