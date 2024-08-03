@@ -47,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
 
          // Generate a unique 9-digit transaction ID
             String uniqueTid = generateUniqueTransactionId();
-            String redirectionUrl = "https://192.168.1.200:8443/api/payment/status";
+            String redirectionUrl = "https://food-check-list.up.railway.app/api/payment/status";
             logger.info("Generated redirection URL: {}", redirectionUrl);
 
             // Determine the month value
@@ -55,7 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             // Set up UPI payment parameters
             String num = "FOOD-BILL-FOR-THE-MONTH: " + monthValue;
-            String upiLink = "upi://pay?pa=nidhinrajesh1998-2@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
+            String upiLink = "upi://pay?pa=sanithanair137-1@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num+ "&url=" + redirectionUrl;
            // String upiLink = "upi://pay?pa=nidhinrajesh1998-2@okicici&pn=NidhinR&tid=" + uniqueTid +"&am=" + paymentRequest.getAmount() + "&tn=" + num + "&url=" + redirectionUrl;
             
             // Generate QR code image
