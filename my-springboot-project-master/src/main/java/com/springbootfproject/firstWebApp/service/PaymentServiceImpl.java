@@ -16,6 +16,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.springbootfproject.firstWebApp.Util.ConstantsUtil;
 import com.springbootfproject.firstWebApp.Util.PaymentException;
 import com.springbootfproject.firstWebApp.dto.PaymentRequest;
 import com.springbootfproject.firstWebApp.dto.PaymentResponse;
@@ -34,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private TodoRepository todoRepository;
+    
 
 	/*
 	 * @Override public PaymentResponse generatePaymentRequest(PaymentRequest
@@ -88,27 +90,27 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponse paymentResponse = new PaymentResponse();
         try {
             // Check if there are any pending transactions for the user
-            List<Transaction> pendingTransactions = transactionRepository.findByUsernameAndStatus(paymentRequest.getUsername(), "PENDING");
+            List<Transaction> pendingTransactions = transactionRepository.findByUsernameAndStatus(paymentRequest.getUsername(), ConstantsUtil.PENDING_STATUS);
             if (!pendingTransactions.isEmpty()) {
                 throw new PaymentException("User has pending transactions. Please complete them before proceeding.");
             }
 
             // Generate a unique 9-digit transaction ID
             String uniqueTid = generateUniqueTransactionId();
-            String redirectionUrl = "https://food-check-list.up.railway.app/api/payment/status";
+            String redirectionUrl = ConstantsUtil.REDIRECTION_URL;
             logger.info("Generated redirection URL: {}", redirectionUrl);
 
             // Determine the month value
             String monthValue = determineMonth(paymentRequest.getUsername());
 
             // Set up UPI payment parameters
-            String num = "FOOD-BILL-FOR-THE-MONTH: " + monthValue;
+            String num = ConstantsUtil.UPI_NUM + monthValue;
             double amount = paymentRequest.getAmount();
-            String payee = "7356324654@axisb";
-            String payeeName = "Nidhin R";
+            String payee = ConstantsUtil.PAYEE;
+            String payeeName = ConstantsUtil.PAYEE_NAME;
 
-            String googlePayLink = "tez://upi/pay?pa=" + payee + "&pn=" + payeeName + "&am=" + amount + "&tn=" + num + "&url=" + redirectionUrl;
-            String phonePeLink = "phonepe://upi/pay?pa=" + payee + "&pn=" + payeeName + "&am=" + amount + "&tn=" + num + "&url=" + redirectionUrl;
+            String googlePayLink = ConstantsUtil.GOOGLE_PAY_SCHEME + payee + "&pn=" + payeeName + "&am=" + amount + "&tn=" + num + "&url=" + redirectionUrl;
+            String phonePeLink = ConstantsUtil.PHONE_PE_SCHEME + payee + "&pn=" + payeeName + "&am=" + amount + "&tn=" + num + "&url=" + redirectionUrl;
 
             // Generate QR code image
             String qrCodeImage = generateQRCodeImage(googlePayLink); // Use Google Pay link for QR code
@@ -125,18 +127,18 @@ public class PaymentServiceImpl implements PaymentService {
             transaction.setTransactionId(uniqueTid);
             transaction.setUsername(paymentRequest.getUsername());
             transaction.setAmount(paymentRequest.getAmount());
-            transaction.setUpiUrl(googlePayLink); // Save Google Pay URL as UPI URL
-            transaction.setStatus("PENDING");
+            transaction.setUpiUrl(googlePayLink); 
+            transaction.setStatus(ConstantsUtil.PENDING_STATUS);
             transactionRepository.save(transaction);
             
             // Log the saved transaction
             logger.info("Transaction saved: {}", transaction);
         } catch (PaymentException e) {
-            logger.error("Error generating UPI URL", e);
+            logger.error(ConstantsUtil.ERROR_GENERATING_UPI_URL, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Error generating UPI URL", e);
-            throw new PaymentException("Error generating UPI URL", e);
+            logger.error(ConstantsUtil.ERROR_GENERATING_UPI_URL, e);
+            throw new PaymentException(ConstantsUtil.ERROR_GENERATING_UPI_URL, e);
         }
 
         return paymentResponse;
@@ -215,7 +217,7 @@ public class PaymentServiceImpl implements PaymentService {
                 logger.debug("Updated transaction status: {}", updatedTransaction.getStatus());
 
                 // Check if the new status is 'success' and the previous status was 'PENDING'
-                if (updatedTransaction.getStatus().equals("success")) {
+                if (updatedTransaction.getStatus().equals(ConstantsUtil.SUCCESS_STATUS)) {
                     logger.debug("All the Food Entries will be deleted for the username: {}", transaction.getUsername());
 
                     // Perform the deletion
@@ -235,7 +237,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public String getManualConfirmation(String username, double amount) {
 		
-		Transaction pendingTransactions = transactionRepository.getByUsernameAndStatus(username, "PENDING");
+		Transaction pendingTransactions = transactionRepository.getByUsernameAndStatus(username, ConstantsUtil.PENDING_STATUS);
 		
 		String transactionId = pendingTransactions.getTransactionId();
 		return transactionId;

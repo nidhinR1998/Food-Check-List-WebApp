@@ -13,7 +13,7 @@ import com.springbootfproject.firstWebApp.config.EncryptionConfig;
 @Component
 public class EncryptionUtil {
 
-    private static final String ALGORITHM = "AES";
+    private static final String ALGORITHM = ConstantsUtil.VALUE_CODE;
     
     private final EncryptionConfig encryptionConfig;
     @Autowired
