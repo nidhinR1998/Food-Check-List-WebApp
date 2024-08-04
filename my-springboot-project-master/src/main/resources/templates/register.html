@@ -89,6 +89,7 @@
         background-color: #c299d0;
         transform: scale(1.05);
     }
+    
 
     .success-message {
         background-color: #4caf50;
@@ -166,6 +167,35 @@
     .password-criteria .invalid {
         color: #f44336;
     }
+
+    .blurred-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        visibility: hidden;
+    }
+
+    .loader {
+        border: 8px solid #f3f3f3; 
+        border-top: 8px solid #3498db; 
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 </style>
 </head>
 <body>
@@ -178,7 +208,7 @@
             </div>
 
             <h2>Registration</h2>
-            <form method="post" th:action="@{/userDetails/register}" th:object="${user}">
+            <form method="post" th:action="@{/userDetails/register}" th:object="${user}" id="registrationForm">
                 <div class="form-group">
                     <label for="fullname">Fullname</label>
                     <input th:field="*{fullname}" type="text" id="fullname" name="fullname" placeholder="Enter your fullname" required>
@@ -206,7 +236,7 @@
                     </div>
                     <ul class="password-criteria">
                         <li id="length" class="invalid">At least 8 characters</li>
-                        <li id="uppercase" class="invalid">At least one uppercase letter</li>
+                        <li id="uppercase" class="invalid">At least one UPPERCASE letter</li>
                         <li id="lowercase" class="invalid">At least one lowercase letter</li>
                         <li id="number" class="invalid">At least one number</li>
                         <li id="special" class="invalid">At least one special character</li>
@@ -214,11 +244,16 @@
                 </div>
                 <button type="submit">Register</button>
             </form>
+            
              <!-- Display error or success messages -->
             <div class="alert alert-danger" th:if="${error}" role="alert" th:text="${error}"></div>
             <div class="alert alert-success" th:if="${success}" role="alert" th:text="${success}"></div>
             <span>Already Registered? <a th:href="@{/userDetails/login}">Login</a></span>
         </div>
+    </div>
+
+    <div class="blurred-background" id="loader-background">
+        <div class="loader"></div>
     </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -286,6 +321,14 @@
             strengthBar.classList.add('bg-danger');
             strengthBar.classList.remove('bg-success', 'bg-warning');
         }
+    });
+
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        document.getElementById('loader-background').style.visibility = 'visible';
+    });
+
+    document.querySelector('button[type="submit"]').addEventListener('click', function(event) {
+        document.getElementById('registrationForm').submit();
     });
 </script>
 </body>

@@ -77,6 +77,34 @@
         background-color: #c299d0;
         transform: scale(1.05);
     }
+    
+      .spinner-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 6px solid #ccc;
+        border-top: 6px solid #5e057e;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
     .alert {
         border-radius: 10px;
@@ -133,7 +161,7 @@
     <div class="container">
         <div class="form-container">
             <h2>Verify Your Account</h2>
-            <form method="post" action="/userDetails/verifyCode">
+            <form method="post" action="/userDetails/verifyCode" onsubmit="showSpinner()">
                 <div class="form-group">
                     <label for="code">Enter OTP - Email or PhoneNumber</label>
                     <input type="text" id="code" name="code" placeholder="Enter OTP - Email or PhoneNumber" required>
@@ -143,6 +171,9 @@
                 <input type="hidden" name="token" th:value="${token}">
                 <button type="submit">Verify</button>
             </form>
+            <div class="spinner-overlay" id="spinner-overlay">
+                <div class="spinner" id="spinner"></div>
+            </div>
             <!-- Display error or success messages -->
             <div class="alert alert-danger" th:if="${error}" role="alert" th:text="${error}"></div>
             <div class="alert alert-success" th:if="${success}" role="alert" th:text="${success}"></div>
@@ -152,5 +183,11 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function showSpinner() {
+        document.getElementById('spinner-overlay').style.display = 'flex';
+        document.querySelector('button[type="submit"]').disabled = true;
+    }
+</script>
 </body>
 </html>
