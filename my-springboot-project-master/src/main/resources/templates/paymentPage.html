@@ -1,184 +1,119 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Page</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: 'Roboto', sans-serif;
-        background-color: #f7f7f7;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .form-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        max-width: 100%;
-        width: 100%;
-        animation: fadeInUp 1.5s ease-in-out;
-        text-align: center;
-        box-sizing: border-box;
-    }
-
-    h2 {
-        color: #4285F4;
-        font-weight: bold;
-        margin: 0;
-        padding-bottom: 20px;
-        font-size: 1.5rem; /* Responsive font size */
-        animation: fadeIn 1s ease-in-out;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        color: #4285F4;
-        font-weight: bold;
-        text-align: left;
-        margin-bottom: 10px;
-    }
-
-    .form-group input {
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-weight: bold;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        width: 100%;
-    }
-
-    .form-group input:focus {
-        border-color: #4285F4;
-        box-shadow: 0 0 10px rgba(66, 133, 244, 0.3);
-        outline: none;
-    }
-
-    .button-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .button-container button {
-        width: 100%;
-        max-width: 300px;
-        padding: 12px 20px;
-        border-radius: 8px;
-        border: none;
-        font-weight: bold;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .gpay-button {
-        background-color: #4285F4;
-        color: #fff;
-    }
-
-    .gpay-button:hover {
-        background-color: #357ae8;
-        transform: scale(1.05);
-    }
-
-    .phonepe-button {
-        background-color: #000;
-        color: #fff;
-    }
-
-    .phonepe-button:hover {
-        background-color: #333;
-        transform: scale(1.05);
-    }
-
-    .alert {
-        border-radius: 10px;
-        margin-top: 20px;
-        font-weight: bold;
-        animation: slideIn 0.5s ease-in-out;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    #upiUrlText {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-weight: bold;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        width: 100%;
-    }
-
-    #upiUrlText:focus {
-        border-color: #4285F4;
-        box-shadow: 0 0 10px rgba(66, 133, 244, 0.3);
-        outline: none;
-    }
-
-    #qrCodeContainer {
-        margin-top: 20px;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10%);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20%);
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateY(20%);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
         }
-    }
-</style>
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .gpay-button, .phonepe-button, .manual-confirm-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin: 10px 0;
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .phonepe-button {
+            background-color: #7d3c98;
+        }
+
+        .manual-confirm-button {
+            background-color: #28a745;
+        }
+
+        .gpay-button:hover, .phonepe-button:hover, .manual-confirm-button:hover {
+            transform: scale(1.05);
+        }
+
+        .gpay-button .material-icons, .phonepe-button .material-icons, .manual-confirm-button .material-icons {
+            margin-right: 8px;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #qrCodeContainer {
+            margin-top: 20px;
+        }
+
+        #qrCodeImage {
+            width: 200px;
+            height: 200px;
+        }
+
+        .alert {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
+    <div class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <div class="container">
         <div class="form-container">
             <h2>Pay Your Bill</h2>
@@ -204,17 +139,12 @@
                 </div>
             </form>
             <!-- Display error or success messages -->
-            <div id="errorAlert" class="alert alert-danger" style="display:none;" role="alert"></div>
-            <div id="successAlert" class="alert alert-success" style="display:none;" role="alert"></div>
-            <input id="upiUrlText" type="text" style="display:none;">
-            <button id="mainCopyButton" type="button" class="gpay-button" style="display:none;">
-                <span class="material-icons">content_copy</span>
-                Copy
-            </button>
+            <div id="errorAlert" class="alert alert-danger" role="alert"></div>
+            <div id="successAlert" class="alert alert-success" role="alert"></div>
             <div id="qrCodeContainer" style="display:none;">
                 <img id="qrCodeImage" src="" alt="QR Code">
             </div>
-            <button id="manualConfirmationButton" type="button" class="gpay-button" style="display:none;">
+            <button id="manualConfirmationButton" type="button" class="manual-confirm-button" style="display:none;">
                 <span class="material-icons">check_circle</span>
                 Manual Confirmation
             </button>
@@ -230,6 +160,9 @@
 
     document.getElementById('payButton').addEventListener('click', function(event) {
         event.preventDefault(); // Prevent form submission
+        
+        // Show loading animation
+        document.querySelector('.loading-overlay').style.display = 'flex';
 
         // Hide error alert if visible
         document.getElementById('errorAlert').style.display = 'none';
@@ -260,17 +193,15 @@
                 const qrCodeImage = `data:image/png;base64,${data.qrCodeImage}`;
 
                 document.getElementById('qrCodeImage').src = qrCodeImage;
-                document.getElementById('qrCodeContainer').style.display = 'block';
+                
 
-                const userConfirmed = confirm('If you need UPI Link, please click "Cancel" to generate an UPI payment link. Click "OK" to proceed with the through QR or UPI Applications.');
+                const userConfirmed = confirm('If you donot have an UPI Application, please click "Cancel" to generate an QR CODE. Click "OK" to proceed with the UPI Applications.');
                 if (userConfirmed) {
+                	document.getElementById('googlePayButton').style.display = 'block';
+                    document.getElementById('phonePeButton').style.display = 'block';
                     window.location.href = googlePayUrl; // Change to googlePayUrl or phonePeUrl as required
                 } else {
-                    document.getElementById('upiUrlText').value = googlePayUrl; // Show Google Pay URL by default
-                    document.getElementById('upiUrlText').style.display = 'block';
-                    document.getElementById('mainCopyButton').style.display = 'block';
-                    document.getElementById('googlePayButton').style.display = 'block';
-                    document.getElementById('phonePeButton').style.display = 'block';
+                	document.getElementById('qrCodeContainer').style.display = 'block';
                 }
                 document.getElementById('successAlert').style.display = 'block';
                 document.getElementById('successAlert').innerText = "Payment request generated successfully!";
@@ -283,6 +214,10 @@
             console.error('Error:', error);
             document.getElementById('errorAlert').style.display = 'block';
             document.getElementById('errorAlert').innerText = error.message;
+        })
+        .finally(() => {
+            // Hide loading animation
+            document.querySelector('.loading-overlay').style.display = 'none';
         });
     });
 
@@ -299,18 +234,6 @@
             window.location.href = phonePeUrl;
         } else {
             alert('No PhonePe URL generated yet. Please click on Generate/Pay button first.');
-        }
-    });
-
-    document.getElementById('mainCopyButton').addEventListener('click', function() {
-        if (upiUrl) {
-            navigator.clipboard.writeText(upiUrl).then(function() {
-                alert('UPI URL copied to clipboard. Please open Google Pay and paste the URL to proceed with payment.');
-            }, function(err) {
-                console.error('Could not copy text: ', err);
-            });
-        } else {
-            alert('No UPI URL generated yet. Please click on Generate/Pay button first.');
         }
     });
 
