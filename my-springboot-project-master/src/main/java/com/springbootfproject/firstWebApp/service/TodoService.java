@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.springbootfproject.firstWebApp.dto.TodoFilterReq;
 import com.springbootfproject.firstWebApp.dto.TodoFilterRes;
+import com.springbootfproject.firstWebApp.repository.AdvanceRepository;
 import com.springbootfproject.firstWebApp.repository.TodoRepository;
 import com.springbootfproject.firstWebApp.todomodel.Todo;
 
@@ -28,6 +29,9 @@ import jakarta.validation.Valid;
 public class TodoService {
 	@Autowired
 	private TodoRepository todoRepository;
+	
+	@Autowired
+	private AdvanceRepository advanceRepository;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -96,5 +100,50 @@ public class TodoService {
 		
 		return null;
 	}
+
+	public int getPayAmount(int totalAdvanceAmount, int consumedAmount, String username) {
+	    int difference = totalAdvanceAmount - consumedAmount;
+
+	    if (difference > 0) {
+	        // STAGE 1: Difference is positive
+	        // Update totalAdvanceAmount to the difference
+	        totalAdvanceAmount = difference;
+
+	        // Update the Todo table to set all amounts to zero
+	        List<Todo> todos = todoRepository.findByUsername(username);
+	        for (Todo todo : todos) {
+	            todo.setAmount(0);
+	            todoRepository.save(todo);
+	        }
+	    } else if (difference < 0) {
+	        // STAGE 2: Difference is negative
+	        // Set totalAdvanceAmount to zero
+	        totalAdvanceAmount = 0;
+
+	        // Update the Advance table to set totalAdvanceAmount to zero
+	        advanceRepository.updateTotalAdvanceAmount(totalAdvanceAmount, username);
+
+	        // Update consumedAmount to the absolute value of the difference
+	        consumedAmount = Math.abs(difference);
+	    } else {
+	        // STAGE 3: Difference is zero
+	        // No changes needed for both totalAdvanceAmount and consumedAmount
+	        totalAdvanceAmount = 0;
+
+	        // Update the Todo table to set all amounts to zero
+	        List<Todo> todos = todoRepository.findByUsername(username);
+	        for (Todo todo : todos) {
+	            todo.setAmount(0);
+	            todoRepository.save(todo);
+	        }
+	    }
+
+	    // Update the totalAdvanceAmount in the database
+	    advanceRepository.updateTotalAdvanceAmount(totalAdvanceAmount, username);
+
+	    // Return the payable amount (which should be 0 if difference is positive)
+	    return Math.max(0, consumedAmount - totalAdvanceAmount);
+	}
+
 
 }

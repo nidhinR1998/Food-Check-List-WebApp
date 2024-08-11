@@ -70,12 +70,6 @@
             width: 100%;
             bottom: 0;
         }
-        /* .table-bordered {
-            border: 1px solid #ddd;
-            border-collapse: collapse;
-            width: 100%;
-            overflow-x: auto; 
-        } */
            
         .table-bordered {
             border: 5px solid #ffb7b7;
@@ -111,6 +105,29 @@
         .pagination-button.active {
             background-color: #d16ba5;
         }
+        
+        .total-advance-section {
+    background-color: #f8f9fa;
+    padding: 1rem 0;
+    margin-top: 55px; /* Ensure it's below the fixed navbar */
+    border-bottom: 2px solid #ff6f61;
+}
+
+.advance-icon {
+    color: #ff6f61;
+    font-size: 1.5rem;
+}
+
+.total-advance-section strong,
+.total-advance-section span {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.total-advance-section span {
+    font-weight: bold;
+}
+        
         @media (max-width: 992px) {
             .container-custom h1 {
                 font-size: 2rem;
@@ -197,6 +214,33 @@
             </div>
         </div>
     </nav>
+    <!-- Payable Amount and Total Advance Section -->
+<section class="total-advance-section">
+    <div class="container d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-wallet advance-icon"></i>
+            <strong class="ml-2">Bill:</strong>
+            <span id="payableAmount" class="ml-2">
+                <span th:if="${availableAdvance - consumedAmount > 0}" th:text="'₹0'"></span>
+                <span th:if="${availableAdvance - consumedAmount < 0}" th:text="'₹' + ${-(availableAdvance - consumedAmount)}"></span>
+                <span th:if="${availableAdvance - consumedAmount == 0}" th:text="'₹0'"></span>
+            </span>
+        </div>
+        <div class="ml-4 mr-4"></div>
+        <div class="d-flex align-items-center">
+            <i class="fas fa-wallet advance-icon"></i>
+            <strong class="ml-2">Advance:</strong>
+            <span id="totalAdvanceAmount" class="ml-2">
+                <span th:if="${availableAdvance - consumedAmount > 0}" th:text="'₹' + ${availableAdvance - consumedAmount}"></span>
+                <span th:if="${availableAdvance - consumedAmount < 0}" th:text="'₹0'"></span>
+                <span th:if="${availableAdvance - consumedAmount == 0}" th:text="'₹0'"></span>
+            </span>
+        </div>
+    </div>           
+</section>
+
+    
+    
 <div class="container container-custom">
     <h1>Your Check Lists Are:</h1>
     <hr>
@@ -276,16 +320,31 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4">
+                    <td colspan="3">
                         <a href="/todo/add-todo" class="btn btn-custom"><i class="fas fa-plus"></i> Add Food</a>
                     </td>
-                    <td colspan="1"><strong>Total Amount:</strong></td>                                          
-                    <td id="totalAmount" th:text="${totalAmount}"></td>
-                    
+                   
                     <td colspan="1">
-                        <a href="/api/payment/generatePaymentPage" class="btn btn-custom"><i class="fas fa-money"></i> Make Payment</a>
+                        <a href="/todo/add-advance" class="btn btn-custom"><i class="fas fa-plus"></i> Advance</a>
+                        
                     </td>
-                    <td></td>
+                    <td colspan="1"><strong>Total Consumed:</strong></td>                                          
+                    <td id="consumedAmount" th:text="${consumedAmount}"></td>
+                    
+					<td colspan="1">
+						<form action="/api/payment/generatePaymentPage" method="post">
+							<input type="hidden" id="totalAdvanceAmountInput"
+								name="totalAdvanceAmount"
+								th:value="${availableAdvance - consumedAmount > 0 ? availableAdvance - consumedAmount : 0}" />
+							<input type="hidden" id="payableAmountInput" name="payableAmount"
+								th:value="${availableAdvance - consumedAmount > 0 ? 0 : (availableAdvance - consumedAmount) < 0 ? -(availableAdvance - consumedAmount) : 0}" />
+							<button type="submit" class="btn btn-custom">
+								<i class="fas fa-money"></i> Make Payment
+							</button>
+						</form>
+					</td>
+
+					<td></td>
                 </tr>
             </tfoot>
         </table>
@@ -316,7 +375,7 @@
 
         function renderTable(todos) {
             $('#todos-body').empty();
-            let totalAmount = 0;
+            let consumedAmount = 0;
             todos.forEach((todo, index) => {
                 var row = '<tr>' +
                     '<td>' + (index + 1) + '</td>' +
@@ -325,13 +384,13 @@
                     '<td>' + todo.time + '</td>' +
                     '<td>' + todo.received + '</td>' +
                     '<td>' + todo.amount + '</td>' +
-                    '<td><a href="/todo/delete-todo?id=' + todo.id + '" class="btn btn-warning"><i class="fas fa-trash-alt"></i> Delete</a></td>' +
+                    /* '<td><a href="/todo/delete-todo?id=' + todo.id + '" class="btn btn-warning"><i class="fas fa-trash-alt"></i> Delete</a></td>' + */
                     '<td><a href="/todo/update-todo?id=' + todo.id + '" class="btn btn-success"><i class="fas fa-edit"></i> Update</a></td>' +
                     '</tr>';
                 $('#todos-body').append(row);
-                totalAmount += todo.amount;
+                consumedAmount += todo.amount;
             });
-            $('#totalAmount').text(totalAmount);
+            $('#consumedAmount').text(consumedAmount);
         }
 
         function updatePagination() {

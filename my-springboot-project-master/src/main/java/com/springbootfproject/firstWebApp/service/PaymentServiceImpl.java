@@ -20,6 +20,7 @@ import com.springbootfproject.firstWebApp.Util.ConstantsUtil;
 import com.springbootfproject.firstWebApp.Util.PaymentException;
 import com.springbootfproject.firstWebApp.dto.PaymentRequest;
 import com.springbootfproject.firstWebApp.dto.PaymentResponse;
+import com.springbootfproject.firstWebApp.repository.AdvanceRepository;
 import com.springbootfproject.firstWebApp.repository.TodoRepository;
 import com.springbootfproject.firstWebApp.repository.TransactionRepository;
 import com.springbootfproject.firstWebApp.todomodel.Todo;
@@ -35,6 +36,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private TodoRepository todoRepository;
+    
+    @Autowired
+    private AdvanceRepository advRepo;
     
 
 	/*
@@ -195,7 +199,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void updateTransactionStatus(String transactionId, String upiTxnId, String status) {
+    public void updateTransactionStatus(String transactionId, String upiTxnId, String status, String updateAdvance, String username) {
         // Retrieve the transaction using the generated transactionId
         Transaction transaction = transactionRepository.findByTransactionId(transactionId);
         if (transaction != null) {
@@ -220,8 +224,13 @@ public class PaymentServiceImpl implements PaymentService {
                 if (updatedTransaction.getStatus().equals(ConstantsUtil.SUCCESS_STATUS)) {
                     logger.debug("All the Food Entries will be deleted for the username: {}", transaction.getUsername());
 
-                    // Perform the deletion
+                    // Perform the deletion and updating the Remaining Advance
                     long deletedRecords = todoRepository.deleteByUsername(transaction.getUsername());
+                    double updateAdvanceDouble = Double.parseDouble(updateAdvance);
+                    int updateAdvanceInt = (int) updateAdvanceDouble;
+           
+                    advRepo.updateTotalAdvanceAmount(updateAdvanceInt, username);
+                    
                     logger.debug("{} records deleted for the username: {}", deletedRecords, transaction.getUsername());
                 } else {
                     logger.debug("No deletion needed. Transaction status: {}", updatedTransaction.getStatus());
@@ -235,7 +244,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 	@Override
-	public String getManualConfirmation(String username, double amount) {
+	public String getManualConfirmation(String username, double amount, double updateAdvance) {
 		
 		Transaction pendingTransactions = transactionRepository.getByUsernameAndStatus(username, ConstantsUtil.PENDING_STATUS);
 		

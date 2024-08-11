@@ -6,23 +6,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.springbootfproject.firstWebApp.todomodel.Advance;
-import com.springbootfproject.firstWebApp.todomodel.Todo;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+
 @SessionAttributes("username")
-public interface TodoRepository extends JpaRepository<Todo, Integer> {
+@Repository
+public interface AdvanceRepository extends JpaRepository<Advance, Long>{
 
-	public List<Todo> findByUsername(String username);
+	List<Advance> findByUsername(String username);
 
-	@Modifying
-    @Transactional
-    @Query("DELETE FROM Todo t WHERE t.username = :username")
-    int deleteByUsername(@Param("username") String username);
-
-	
+	 @Modifying
+	    @Transactional
+	    @Query("UPDATE Advance a SET a.amount = :newTotalAdvanceAmount WHERE a.username = :username")
+	    void updateTotalAdvanceAmount(@Param("newTotalAdvanceAmount") int newTotalAdvanceAmount, @Param("username") String username);
 
 }

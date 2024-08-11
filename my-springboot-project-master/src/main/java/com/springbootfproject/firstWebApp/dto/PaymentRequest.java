@@ -3,6 +3,7 @@ package com.springbootfproject.firstWebApp.dto;
 public class PaymentRequest {
     private double amount;
     private String username;
+    private double updateAdvance;
     
 
     // Getters and Setters
@@ -21,5 +22,16 @@ public class PaymentRequest {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+	public double getUpdateAdvance() {
+		return updateAdvance;
+	}
+
+	public void setUpdateAdvance(double updateAdvance) {
+		this.updateAdvance = updateAdvance;
+	}
+
+	
     
+	
 }
