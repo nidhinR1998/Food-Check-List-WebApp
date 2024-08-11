@@ -103,6 +103,10 @@
             <input type="text" class="form-control" id="amount" th:value="${amount}" name="amount" required readonly>
         </div>
         <div class="form-group">
+            <label for="amount">Remaining Advance</label>
+            <input type="text" class="form-control" id="updateAdvance" th:value="${updateAdvance}" name="updateAdvance" required readonly>
+        </div>
+        <div class="form-group">
             <label for="transactionId">APP Transaction ID</label>
             <input type="text" class="form-control" id="transactionId" th:value="${transactionId}" name="transactionId" required readonly>
         </div>
@@ -143,6 +147,8 @@
             let transactionId = $('#transactionId').val();
             let upiTxnId = $('#upiTxnId').val();
             let status = $('#status').val();
+            let updateAdvance = $('#updateAdvance').val();
+            let username = $('#username').val();
 
             $.ajax({
                 url: '/api/payment/status',
@@ -150,7 +156,9 @@
                 data: {
                     transactionId: transactionId,
                     upiTxnId: upiTxnId,
-                    status: status
+                    status: status,
+                    updateAdvance: updateAdvance,
+                    username: username
                 },
                 success: function(response) {
                     $('#spinner-overlay').css('display', 'none');
